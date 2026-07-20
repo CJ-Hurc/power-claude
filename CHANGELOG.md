@@ -6,6 +6,79 @@ All notable changes to the Power Claude VS Code extension are recorded here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.98] — 2026-07-20
+
+### Changed
+
+- **Marketplace listing** — display name **Power Claude — Claude Code Auto Resume**; short description leads with auto-resume, multi-account switcher, rate-limit help, and an honest **7-day free Pro trial** (removed contradictory "Free to start"); fixed the Anthropic third-party disclaimer line on the public listing.
+
+### Fixed
+
+- **Marketplace packaging** — public builds install cleanly from the VS Code Marketplace and Open VSX.
+
+## [3.0.97] — 2026-07-19
+
+### Fixed
+
+## [3.0.96] — 2026-07-19
+
+### Fixed
+
+### Fixed
+
+- **Marketplace packaging reliability** — release packaging and verification pipeline hardened so public builds install cleanly from the VS Code Marketplace and Open VSX.
+
+### Fixed
+
+### Fixed
+
+## [3.0.95] — 2026-07-19
+
+### Security
+
+- **Shipped-package IP surface hardening** — production VSIX packaging strips shell-comment leakage, verifies protected-bundle markers, and tightens gate checks so customer installs stay free of internal source surfaces.
+
+### Changed
+
+- **Release pipeline** ships a canonical proxy-bundle step so marketplace builds keep proxy packaging aligned with the published extension.
+
+## [3.0.94] — 2026-07-19
+
+### Fixed
+
+## [3.0.93] — 2026-07-19
+
+### Changed
+
+- **First-run is Proof Mode–first** — VS Code banner + Walkthrough deep-link open on Claude Health Check (`#proofscan`) instead of Auto-Rotation Engine. Rotation step still opens for incomplete multi-account-mode nags only. CLI install tips lead with `pc proof`. Savings remains the primary value prop; Auto-Rotation Engine stays opt-in OFF by default.
+
+## [3.0.92] — 2026-07-16
+
+### Fixed
+
+- **Publish CI Package VSIX** — `prepublish.sh` no longer embeds a bash `#` comment / gate call inside `node -e` (Node 22 SyntaxError aborted vsce package).
+
+## [3.0.91] — 2026-07-16
+
+### Fixed
+
+- **Publish CI TypeScript** — Flow Explorer payload validator no longer fails `tsc` on Combined walkthrough (narrow step fields instead of casting the mode's `readonly unknown[]`).
+
+## [3.0.90] — 2026-07-16
+
+### Fixed
+
+- **Publish CI `npm ci`** no longer depends on an unpublished Flow Explorer UI package — Flow Explorer assets ship from in-repo listing media; sync is a no-op when that package is absent.
+- **Customer installs are self-contained** — shared libraries are compiled into the extension/CLI artifacts so installers do not need a private package registry.
+- **Publish gate fails closed** if private shared libraries are listed under runtime dependencies (they must remain build-time only).
+
+## [3.0.89] — 2026-07-16
+
+### Fixed
+
+- **Flow Explorer historical sessions** hard-lock the Client/agent filter to the stack that actually ran the transcript (no freestyle switch that implies a different agent executed history).
+- **Flow Explorer webview** renders the final post-merge payload (Local History merge) so agent bind fields are not dropped on open.
+
 ## [3.0.88] — 2026-07-15
 
 ### Fixed
@@ -1472,7 +1545,7 @@ Builds on the calibration engine + System Index (3.0.35):
  build (not the shipped customer build) it is marked everywhere it matters: the
  status-bar badge reads `v<version>-dev` on an amber background, the dashboard
  header chip turns amber and shows `-dev`, and `pc version` prints
- `power-claude <version> (dev)`. A dev build can no longer be mistaken for a release.
+ `power-claude <version> ·dev`. A dev build can no longer be mistaken for a release.
 
 ### Changed
 
