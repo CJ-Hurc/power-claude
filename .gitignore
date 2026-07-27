@@ -1,0 +1,5 @@
+# Harness runtime (never product source)
+.hurc-harness/state/
+.hurc-harness/worktrees/
+.hurc-harness/primary-tree-pin.enabled
+.state/
