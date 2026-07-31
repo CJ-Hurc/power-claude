@@ -6,6 +6,98 @@ All notable changes to the Power Claude VS Code extension are recorded here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+
+## [3.0.108] — 2026-07-24
+
+### Changed
+
+- **Sessions chrome (IA Phase 4)** — one control dock: status chips + unified **List | In transcript** search + sticky bulk bar; table built-in search hidden to end dual-search stacking.
+- **Home recovery (IA Phase 3)** — when the pool is thin/locked or emergency-off is active, Overview shows **Force Heal / Unstick / Switch to soonest / Emergency On** (and Debug) without digging into Debug. Stale Layer 2 watchdog gets its own integrity callout with Rescan + Force Heal.
+- **Sessions unify (IA Phase 2)** — one Sessions home with mode switcher: **Tree** (activity-bar default), **List** (Home → Sessions table deep-link), **Search**, **Lane**. Activity bar order: Home → Sessions → Profiles → Harness Flow. Files Touched / Session Worktrees stay inspector panes (selection / presence gated), not always-on empty primaries. Title-bar + viewsWelcome teach the map.
+
+### Fixed
+
+- **Flow Explorer open / paint performance (phase 2)** — two-phase host open (pipeline blueprint first, connected-harness enrich via `setData` after paint); view-lazy Outline/Code/Diagram/Timeline so only the active surface rebuilds on zoom/filter; walk panel capped at 24 steps; outline DOM capped at 150 rows. Large harness blueprints stay responsive.
+
+## [3.0.107] — 2026-07-22
+
+### Fixed
+
+- **`pc relogin` without a usable TTY** — on agent/SSH hosts `/dev/tty` often exists but is not openable (ENXIO), which aborted OAuth after printing the URL. Relogin now probes openability, always prints the authorize URL on stderr, and when there is no TTY accepts the OAuth code via `PC_RELOGIN_CODE` or `~/.power-claude/state/relogin-code.<profile>.txt` (polled up to 10 minutes).
+
+## [3.0.106] — 2026-07-22
+
+### Fixed
+
+- **Marketplace must not clobber DEV** — sticky prefer-DEV intent under `~/.power-claude/state/prefer-dev-channel.json` + cached local `*-dev.vsix`. When Marketplace auto-update installs PROD over a DEV install, activate reinstalls the local DEV VSIX and prompts reload (instead of leaving you on PROD). `install-local-dev` plants the intent; hot-activate is gated so PROD drops do not win.
+- **Claude Code panel crash (`claudeVSCodePanel`)** — stock Claude Code `getAuthStatus()` calls `scopes.includes(...)` with no null-guard. Scopes-less `claudeAiOauth` blobs (from rotation/refresh that only rewrote tokens) threw TypeError and painted "An error occurred while loading view: claudeVSCodePanel". Power Claude now ensures default OAuth scopes on every live-credentials write: shared SSoT `claudeOauthScopes`, `safeRotate`, engine v2 `TokenManager.persistRefreshed` + `ProfileStore.syncLiveCredentials`, and the rotator credential swap.
+
+## [3.0.105] — 2026-07-22
+
+### Fixed
+
+## [3.0.104] — 2026-07-22
+
+### Fixed
+
+- **Ship-path absolute home leak** — remove hardcoded maintainer home-path candidates for `hurc-harness-v2` resolution (worktree CLI/UI) so `audit-vsix` / publish packaging can pass.
+
+### Changed
+
+- Docs: version SSoT table in `docs/marketplace/distribution.md` + AGENTS.md (public Releases/Marketplace = customer latest; private Releases = maintainer tag mirror).
+
+## [3.0.103] — 2026-07-22
+
+### Added
+
+- **Provider-separated usage tracking (anchors v2)** — Claude/Grok/etc. never share identity keys or NDJSON files. Window `periodStart`/`periodEnd` for claim testing; user anchors via `pc tracking anchors add`; session markers for Flow Explorer. Contract: `source`.
+- **Multi-host session inventory** — indexes Grok Build sessions under `~/.grok/sessions` with `agentHost=grok-cli` and real brain model (no longer mislabeled as Claude Code).
+- Sessions / worktrees list metadata: host, brain, session id, branch, tags, absolute dates.
+- Session Detail Lifetime flowchart projects usage anchors / user markers as timeline legs.
+
+### Fixed
+
+- **`pc tracking` CLI crash** — command referenced undefined `args` and never exited; now `process.exit(await runTracking(rest))`.
+
+### Changed
+
+- **Marketplace display name** — **Power Claude — Save $115+/mo vs Claude Max**. Money is the title CTA.
+
+## [3.0.102] — 2026-07-22
+
+### Added
+- **Cross-session task ownership + assist** — docs for harness `session/tasks` ledger (single-owner tasks, signed handoff transfer/takeover, opt-in `task.sh assist claim-next` for peer capacity). Feature: product docs.
+- Session Explorer: handoff/takeover row badge (`↔`) with durable ledger cue so inbox drain cannot hide `awaiting_ack` contracts; plain mail remains `✉`.
+- **“Will auto-resume” badge** on Session History rows that are *guaranteed* to come back after a rate-limit interrupt. Shows the quota ETA while the pool is cooling. Gated on the same `evaluateAutoResumeCandidacy` predicate the auto-resume actuator uses — a never-engaged tab (no pending-recovery entry) never shows the badge. *Affected area: Sessions / auto-resume.*
+### Changed
+- **Marketplace listing CTA** — `displayName` **Power Claude — Claude Code Savings & Auto-Resume** (was Auto Resume–first SEO title). Short description leads with **Save $N+/mo vs Claude Max**, then multi-account / rate-limit / auto-resume for discovery. Generator SSoT: `related module` `renderMarketplaceDescription`.
+
+## [3.0.101] — 2026-07-21
+
+### Fixed
+- Remove hard-coded maintainer home path from `related module` (blocked marketplace VSIX security gate on 3.0.100).
+
+_No pending changes — staged work for the next release goes here._
+
+## [3.0.100] — 2026-07-21
+
+### Fixed
+- Restore `power-claude referral` CLI human output (broken multi-line string literals that failed TypeScript CI on 3.0.99).
+- `make publish` / `ship.sh`: set ship/main-gate latches **before** release-log commit so pipeline-only main can advance the publish row.
+
+_No pending changes — staged work for the next release goes here._
+
+## [3.0.99] — 2026-07-20
+
+### Added
+
+- **`pc msg` team coordination** — pass-through to harness handoff ledger, workboard, peers, and 🧪 **experimental Context Routing (Token Guard)** (`pc msg handoff …`, `pc msg workboard`, `pc msg routing status|report`). Durable handoff/takeover with require-ack lives in the harness bus; PC CLI surfaces it for operators. Routing is experimental and audited — not a guaranteed bill reduction.
+
+### Fixed
+
+- **License activation against local / dev auth** — skip watermarked proxy-bundle fetch on localhost (no more noisy TLS errors after activate); license validate path verified end-to-end with the subscription server.
+- **License heartbeat load** — healthy installs re-check less often with lean payloads so activation security does not slow the product.
 ## [3.0.98] — 2026-07-20
 
 ### Changed
@@ -26,12 +118,24 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+
+
+### Fixed
+
+### Fixed
 - **Marketplace packaging reliability** — release packaging and verification pipeline hardened so public builds install cleanly from the VS Code Marketplace and Open VSX.
 
 ### Fixed
 
 ### Fixed
 
+
+
+### Fixed
+
+### Fixed
+
+### Fixed
 ## [3.0.95] — 2026-07-19
 
 ### Security
@@ -56,6 +160,9 @@ and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+
+
+- **Release:** `related module` — human terminal path to push main + retarget `v3.0.91` after prepublish CI fix (Marketplace still on 3.0.88; download mirror already on 3.0.91).
 - **Publish CI Package VSIX** — `prepublish.sh` no longer embeds a bash `#` comment / gate call inside `node -e` (Node 22 SyntaxError aborted vsce package).
 
 ## [3.0.91] — 2026-07-16
