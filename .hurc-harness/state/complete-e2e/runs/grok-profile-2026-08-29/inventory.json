@@ -1,0 +1,80 @@
+{
+  "repo": "CJ-Hurc/power-claude",
+  "ref": "feat/complete-e2e-board",
+  "base_sha": "fe1207d15c4a210411b463ea9a4d9bd0228e1a4c",
+  "operator": "grok-profile",
+  "run_id": "grok-profile-2026-08-29",
+  "at": "2026-08-29T18:16:00Z",
+  "cells_opened": [
+    {
+      "path": "/",
+      "type": "root",
+      "files": [".gitignore", "README.md", "CHANGELOG.md", "LICENSE", "media/"]
+    },
+    {
+      "path": "media/loaders",
+      "type": "assets",
+      "files": ["power-claude-loaders.js", "gallery.html", "README.md", "README.concept.md", "power-claude-neural-ignition.gif", "previews/"]
+    },
+    {
+      "path": "media/marketplace",
+      "type": "assets",
+      "files": ["hero-*.png", "demo-*.gif", "07-rate-limit-rotation.png", "08-balanced-mode-status-bar.png", "09-watchdog-resume.png", "10-session-blame-gutter.png", ".gitkeep"]
+    },
+    {
+      "path": "README.md",
+      "type": "doc",
+      "capabilities_surface": true
+    },
+    {
+      "path": "CHANGELOG.md",
+      "type": "doc",
+      "size_bytes": 250337
+    },
+    {
+      "path": ".gitignore",
+      "type": "config",
+      "notes": "ignores .hurc-harness/state/ and .hurc-harness/worktrees/"
+    }
+  ],
+  "absent": [
+    "GOAL.json",
+    "package.json",
+    "src/",
+    "source/",
+    "tests/",
+    "test/",
+    ".hurc-harness/GOAL.json",
+    "hooks/ (source)",
+    "forms/",
+    "views/"
+  ],
+  "capabilities": [
+    "pc proof / Claude Health Check",
+    "multi-account + Auto-Rotation Engine (opt-in)",
+    "account groups / scopes",
+    "Power Mode",
+    "Runout Forecaster",
+    "watchdog + Auto-Resume Nudges + Session Actions",
+    "Insight Graph / Session Explorer / cost analytics / session-blame",
+    "Preserve-Focus Fix",
+    "Detached Sessions",
+    "Token Saver / Warm Compacting / Tab Warming",
+    "public extension API",
+    "CLI pc / power-claude"
+  ],
+  "hooks": {
+    "in_repo": false,
+    "runtime_documented": ["Stop", "lifecycle", "rate-limit", "timeline"]
+  },
+  "forms_views": null,
+  "tests": {
+    "in_tree": false,
+    "changelog_claims": ["vitest unit", "e2e concurrent load"]
+  },
+  "goal_json_leaves": [],
+  "gap_repaired": {
+    "kind": "missing_GOAL.json",
+    "action": "add root GOAL.json stub on feat/complete-e2e-board"
+  }
+}
