@@ -1,0 +1,39 @@
+{
+  "schema": "hurc-goal/v1",
+  "repo": "power-claude",
+  "product": "Power Claude — Claude Code Auto Resume, Multi-Account & Rate Limits",
+  "status": "incomplete",
+  "note": "Public tree is marketing/assets mirror. Product source and full test surface live outside this public ref. Complete-e2e stub for harness consumption.",
+  "leaves": [
+    {
+      "id": "goal.root.inventory",
+      "title": "Root inventory complete",
+      "status": "done",
+      "evidence": ".hurc-harness/state/complete-e2e/runs/grok-profile-2026-08-29/inventory.json"
+    },
+    {
+      "id": "goal.contract.public-api",
+      "title": "Public extension API surface documented",
+      "status": "done",
+      "evidence": "README.md Extending Power Claude section"
+    },
+    {
+      "id": "goal.source.present",
+      "title": "Product source tree present in this repo",
+      "status": "blocked",
+      "blocker": "source/ and package.json absent on public main; packaging path private or external"
+    },
+    {
+      "id": "goal.tests.in-tree",
+      "title": "Unit/e2e tests in public tree",
+      "status": "blocked",
+      "blocker": "tests/ absent; CHANGELOG claims vitest suites not shipped on this ref"
+    },
+    {
+      "id": "goal.hooks.source",
+      "title": "Hook scripts versioned in-repo",
+      "status": "blocked",
+      "blocker": "hooks deployed at runtime to ~/.power-claude/hooks; no source hooks/ directory"
+    }
+  ]
+}
