@@ -338,6 +338,7 @@ def main() -> int:
     a = set(argv)
     if a & {"-h", "--help"}:
         print(
+            "usage: scripts/complete-e2e/prove.py [--help]\n"
             "power-claude-prove: wraps execute-consumer + readme_media live proofs; "
             "use --receipt for fail-closed JSON receipt (stdout + .receipts/)"
         )

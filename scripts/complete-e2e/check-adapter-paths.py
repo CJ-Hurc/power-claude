@@ -139,6 +139,7 @@ def main() -> int:
     a = set(argv)
     if a & {"-h", "--help"}:
         print(
+            "usage: scripts/complete-e2e/check-adapter-paths.py [--help]\n"
             "power-claude-check-adapter-paths: fail-closed runtime.json argv "
             "path existence gate (MISSING_PROVER if target missing); "
             "use --runtime PATH to point at an alternate runtime.json"

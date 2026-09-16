@@ -42,7 +42,7 @@ if __name__ == "__main__":
     import sys as _sys
     _a = set(_sys.argv[1:])
     if _a & {"-h", "--help"}:
-        print("power-claude-verify: consumer prove/verify entry — use without flags to run live proofs")
+        print("usage: scripts/verify/run.py [--help]\npower-claude-verify: consumer prove/verify entry — use without flags to run live proofs")
         raise SystemExit(0)
     if _a & {"-V", "--version"}:
         print("power-claude-verify 1.0.0")

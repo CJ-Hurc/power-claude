@@ -197,6 +197,7 @@ def main() -> int:
     a = set(argv)
     if a & {"-h", "--help"}:
         print(
+            "usage: scripts/complete-e2e/execute-consumer.py [--help]\n"
             "power-claude-execute-consumer: runs live consumer.py and emits execute "
             "receipt JSON (stdout + .receipts/); use --out PATH to also write a copy"
         )

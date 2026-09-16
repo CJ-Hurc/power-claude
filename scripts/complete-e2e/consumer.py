@@ -1064,7 +1064,7 @@ if __name__ == "__main__":
     import sys as _sys
     _a = set(_sys.argv[1:])
     if _a & {"-h", "--help"}:
-        print("power-claude-consumer: consumer prove/verify entry — use without flags to run live proofs")
+        print("usage: scripts/complete-e2e/consumer.py [--help]\npower-claude-consumer: consumer prove/verify entry — use without flags to run live proofs")
         raise SystemExit(0)
     if _a & {"-V", "--version"}:
         print("power-claude-consumer 1.0.0")

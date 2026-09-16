@@ -90,6 +90,7 @@ def main() -> int:
     a = set(argv)
     if a & {"-h", "--help"}:
         print(
+            "usage: scripts/complete-e2e/clean-room-replay.py [--help]\n"
             "power-claude-clean-room-replay: delete prove receipt, re-run "
             "prove.py --receipt, fail-closed on missing/stale/behavior_proven!=true"
         )
