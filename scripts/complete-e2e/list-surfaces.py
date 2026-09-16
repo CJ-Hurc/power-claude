@@ -3,19 +3,22 @@
 
 Fail-closed attestation guard: this adapter MUST NEVER set behavior_proven true.
 Inventory listing is not a prove path — only execute/prove adapters may attest.
+
+Paths use scripts/bin/*.sh so declarative + runtime share one path identity
+(avoids reconciliation collisions with dual bin/ trees).
 """
 from __future__ import annotations
 import argparse, json, sys
 from pathlib import Path
 
 CANDIDATES = (
-    ("cli:complete-e2e", "scripts/complete-e2e/run.py"),
-    ("cli:consumer", "scripts/complete-e2e/consumer.py"),
-    ("cli:execute-consumer", "scripts/complete-e2e/execute-consumer.py"),
-    ("cli:verify", "scripts/verify/run.py"),
-    ("cli:prove", "scripts/complete-e2e/prove.py"),
-    ("cli:clean-room-replay", "scripts/complete-e2e/clean-room-replay.py"),
-    ("cli:check-adapter-paths", "scripts/complete-e2e/check-adapter-paths.py"),
+    ("cli:complete-e2e", "scripts/bin/complete-e2e.sh"),
+    ("cli:consumer", "scripts/bin/consumer.sh"),
+    ("cli:execute-consumer", "scripts/bin/execute-consumer.sh"),
+    ("cli:verify", "scripts/bin/verify.sh"),
+    ("cli:prove", "scripts/bin/prove.sh"),
+    ("cli:clean-room-replay", "scripts/bin/clean-room-replay.sh"),
+    ("cli:check-adapter-paths", "scripts/bin/check-adapter-paths.sh"),
 )
 
 
@@ -35,8 +38,6 @@ def main() -> int:
     if not root.is_dir():
         print("list-surfaces: project-dir not a directory", file=sys.stderr)
         return 2
-    # Explicit false: inventory must not self-attest (omit would also be ok; force false is
-    # fail-closed and machine-checkable by complete-e2e-list-surfaces-no-attest regression).
     payload = {
         "schema": "hurc-complete-e2e-runtime-surfaces/v1",
         "behavior_proven": False,
