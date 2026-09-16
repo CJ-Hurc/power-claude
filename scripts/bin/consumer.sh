@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Dual-origin CLI for complete-e2e (declarative scripts/bin + runtime list-surfaces).
-# Engine valid grain for scripts/*.sh passes project-dir as argv[1]; accept and ignore.
+# Dual-origin CLI (declarative scripts/bin + runtime list-surfaces).
+# Engine valid grain for scripts/*.sh passes project-dir; map that to --help
+# so cli-contract gets exit 0 + help text (not a full prove mutation).
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 if [[ $# -eq 1 && -d "$1" ]]; then
-  set --
+  set -- --help
 fi
 exec python3 "$ROOT/scripts/complete-e2e/consumer.py" "$@"
