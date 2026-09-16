@@ -1,13 +1,13 @@
 {
   "schema": "hurc-complete-e2e-actor-catalog/v1",
-  "source": "CLI orchestration product — local operator identity only; no invented HTTP session users.",
+  "source": "CLI-only product: no HTTP session users. guest is the engine-supported local identity (authenticate N/A).",
   "actors": [
     {
-      "actor_id": "operator",
-      "role": "operator",
-      "group": "Operator",
+      "actor_id": "guest",
+      "role": "guest",
+      "group": "Guest",
       "channel": "cli",
-      "guest": false,
+      "guest": true,
       "requires_auth": false,
       "source": "configs/complete-e2e/actors.json"
     }
