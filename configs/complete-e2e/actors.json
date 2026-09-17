@@ -1,0 +1,15 @@
+{
+  "schema": "hurc-complete-e2e-actor-catalog/v1",
+  "source": "CLI-only product: no HTTP session users. guest is the engine-supported local identity (authenticate N/A).",
+  "actors": [
+    {
+      "actor_id": "guest",
+      "role": "guest",
+      "group": "Guest",
+      "channel": "cli",
+      "guest": true,
+      "requires_auth": false,
+      "source": "configs/complete-e2e/actors.json"
+    }
+  ]
+}

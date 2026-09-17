@@ -1,0 +1,16 @@
+{
+  "schema": "hurc-complete-e2e-runtime/v1",
+  "description": "Discovery-only adapters. Prove/check scripts under scripts/complete-e2e/ are occupancy (exec), not surface listers — kind=prover PARSE_FAILURE-blocks the campaign on this engine grain.",
+  "adapters": [
+    {
+      "id": "power-claude-list-surfaces",
+      "kind": "cli",
+      "surface_kind": "cli",
+      "timeout_sec": 30,
+      "argv": [
+        "python3",
+        "scripts/complete-e2e/list-surfaces.py"
+      ]
+    }
+  ]
+}

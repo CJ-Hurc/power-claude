@@ -1,5 +1,11 @@
 # Harness runtime (never product source)
-.hurc-harness/state/
-.hurc-harness/worktrees/
-.hurc-harness/primary-tree-pin.enabled
-.state/
+.hurc-harness/
+tmp/
+
+# Python bytecode (local verify runs)
+__pycache__/
+*.pyc
+.venv/
+
+# complete-e2e prove receipts (generated; never product source)
+scripts/complete-e2e/.receipts/
