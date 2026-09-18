@@ -53,7 +53,8 @@ def main() -> int:
     ok = True
     print("Gate -- policy scan (no ALLOW_UNPROVEN / fake CERTIFIED)")
     banned = []
-    # Scan scripts/, devtools/, configs/, media/, and docs/: verify requires media/;
+    # Scan scripts/, devtools/, configs/, media/, docs/, and root-level files:
+    # verify requires media/ and Layer-1 root surfaces README.md/LICENSE/CHANGELOG.md;
     # shipping loaders live under media/loaders/*.js|*.html and consumer requires
     # media/icon.svg — scripts+devtools+configs-only previously greenwashed PASS
     # while a fake CERTIFIED enable in that required product surface stayed
@@ -61,7 +62,12 @@ def main() -> int:
     # a blind spot. docs/complete-e2e operator notes are .md (already in suffix
     # set) but docs/ was omitted from roots — a fake CERTIFIED enable under docs/ greenwashed
     # policy PASS while scripts+devtools+configs+media stayed "clean".
+    # Root README.md/CHANGELOG.md are .md (already in suffix set) but dir-only
+    # policy_roots omitted the repo root — a fake CERTIFIED enable in README.md
+    # greenwashed policy PASS while scripts+devtools+configs+media+docs stayed "clean".
+    # Scan ROOT.iterdir() files only (not rglob) so tests/ plant needles stay out of scope.
     policy_roots = [ROOT / "scripts", ROOT / "devtools", ROOT / "configs", ROOT / "media", ROOT / "docs"]
+    policy_paths = []
     for policy_root in policy_roots:
         if not policy_root.is_dir():
             continue
@@ -70,116 +76,124 @@ def main() -> int:
                 continue
             if path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts", ".json", ".js", ".html", ".svg"}:
                 continue
-            text = path.read_text(encoding="utf-8", errors="replace")
-            rel = str(path.relative_to(ROOT))
-            # Comments stating the ban are OK; assignments / enables are not.
-            # Build needles without embedding banned assignments as contiguous literals.
-            allow_a = "ALLOW_UNPROVEN" + "=1"
-            allow_b = "ALLOW_UNPROVEN" + " = 1"
-            # Shell =true enables (scripts/*.sh): =1 / " = 1" needles previously
-            # greenwashed PASS while env =true forms stayed invisible.
-            allow_t = "ALLOW_UNPROVEN" + "=true"
-            allow_ts = "ALLOW_UNPROVEN" + " = true"
-            # JSON object enables (configs/*.json): shell-style env needles
-            # previously greenwashed PASS while JSON boolean CERTIFIED stayed invisible.
-            allow_j = '"ALLOW_UNPROVEN"' + ": true"
-            # JSON numeric enables (configs/*.json): boolean ": true" needles
-            # previously greenwashed PASS while JSON numeric CERTIFIED stayed invisible.
-            allow_jn = '"ALLOW_UNPROVEN"' + ": 1"
-            # JSON minified enables (configs/*.json): spaced ": true"/": 1" needles
-            # previously greenwashed PASS while JSON.stringify-style minified
-            # colon-true / colon-1 (no space after colon) stayed invisible.
-            allow_jm = '"ALLOW_UNPROVEN"' + ":true"
-            allow_jnm = '"ALLOW_UNPROVEN"' + ":1"
-            # YAML unquoted-key enables (configs/*.yml|*.yaml): JSON-quoted
-            # key needles previously greenwashed PASS while YAML unquoted-key
-            # boolean ": true" forms stayed invisible even though .yml/.yaml
-            # are already in the suffix set.
-            allow_y = "ALLOW_UNPROVEN" + ": true"
-            # YAML unquoted-key numeric: boolean ": true" needles previously
-            # greenwashed PASS while unquoted-key numeric ": 1" forms stayed
-            # invisible under .yml/.yaml already in the suffix set.
-            allow_yn = "ALLOW_UNPROVEN" + ": 1"
-            # YAML unquoted-key minified boolean: spaced ": true" needles previously
-            # greenwashed PASS while flow-style unquoted-key minified colon-true
-            # (no space after colon) stayed invisible under .yml/.yaml already in the
-            # suffix set (JSON minified needles require quoted keys).
-            allow_ym = "ALLOW_UNPROVEN" + ":true"
-            # YAML unquoted-key minified numeric: spaced ": 1" and minified ":true"
-            # needles previously greenwashed PASS while flow-style unquoted-key
-            # minified colon-1 (no space after colon) stayed invisible under
-            # .yml/.yaml already in the suffix set (JSON minified ":1" needles
-            # require quoted keys).
-            allow_ynm = "ALLOW_UNPROVEN" + ":1"
-            if (
-                allow_a in text
-                or allow_b in text
-                or allow_t in text
-                or allow_ts in text
-                or allow_j in text
-                or allow_jn in text
-                or allow_jm in text
-                or allow_jnm in text
-                or allow_y in text
-                or allow_yn in text
-                or allow_ym in text
-                or allow_ynm in text
-            ):
-                banned.append(rel + ": " + allow_a)
-            cert_a = "CERTIFIED" + "=1"
-            # Shell spaced numeric enable: ALLOW_UNPROVEN already has allow_b
-            # (" = 1"); CERTIFIED + "=1"-only previously greenwashed PASS while the
-            # spaced numeric form stayed invisible in scripts/*.sh.
-            cert_as = "certified" + " = 1"
-            cert_b = "certified" + " = true"
-            # Shell env =true (no spaces): spaced certified + " = true" previously
-            # greenwashed PASS while no-space =true stayed invisible in scripts/*.sh.
-            cert_t = "certified" + "=true"
-            cert_j = '"CERTIFIED"' + ": true"
-            cert_jl = '"certified"' + ": true"
-            cert_jn = '"CERTIFIED"' + ": 1"
-            cert_jnl = '"certified"' + ": 1"
-            cert_jm = '"CERTIFIED"' + ":true"
-            cert_jml = '"certified"' + ":true"
-            cert_jnm = '"CERTIFIED"' + ":1"
-            cert_jnml = '"certified"' + ":1"
-            # YAML unquoted-key boolean: JSON quoted-key needles previously
-            # greenwashed PASS while unquoted-key ": true" stayed invisible
-            # under .yml/.yaml already listed in the suffix set.
-            cert_y = "certified" + ": true"
-            # YAML unquoted-key numeric: cert_y ": true" previously greenwashed
-            # PASS while unquoted-key numeric ": 1" stayed invisible under .yml/.yaml.
-            cert_yn = "certified" + ": 1"
-            # YAML unquoted-key minified boolean: cert_y ": true" previously
-            # greenwashed PASS while unquoted-key minified colon-true stayed invisible
-            # under .yml/.yaml (JSON cert_jml requires quoted-key minified form).
-            cert_ym = "certified" + ":true"
-            # YAML unquoted-key minified numeric: cert_yn ": 1" / cert_ym ":true"
-            # previously greenwashed PASS while unquoted-key minified colon-1
-            # stayed invisible under .yml/.yaml (JSON cert_jnml requires
-            # quoted-key minified form).
-            cert_ynm = "certified" + ":1"
-            if (
-                cert_a in text
-                or cert_as in text.lower()
-                or cert_b in text.lower()
-                or cert_t in text.lower()
-                or cert_j in text
-                or cert_jl in text.lower()
-                or cert_jn in text
-                or cert_jnl in text.lower()
-                or cert_jm in text
-                or cert_jml in text.lower()
-                or cert_jnm in text
-                or cert_jnml in text.lower()
-                or cert_y in text.lower()
-                or cert_yn in text.lower()
-                or cert_ym in text.lower()
-                or cert_ynm in text.lower()
-            ):
-                banned.append(rel + ": fake CERTIFIED enable")
+            policy_paths.append(path)
+    for path in sorted(ROOT.iterdir()):
+        if not path.is_file():
+            continue
+        if path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts", ".json", ".js", ".html", ".svg"}:
+            continue
+        policy_paths.append(path)
+    for path in policy_paths:
+        text = path.read_text(encoding="utf-8", errors="replace")
+        rel = str(path.relative_to(ROOT))
+        # Comments stating the ban are OK; assignments / enables are not.
+        # Build needles without embedding banned assignments as contiguous literals.
+        allow_a = "ALLOW_UNPROVEN" + "=1"
+        allow_b = "ALLOW_UNPROVEN" + " = 1"
+        # Shell =true enables (scripts/*.sh): =1 / " = 1" needles previously
+        # greenwashed PASS while env =true forms stayed invisible.
+        allow_t = "ALLOW_UNPROVEN" + "=true"
+        allow_ts = "ALLOW_UNPROVEN" + " = true"
+        # JSON object enables (configs/*.json): shell-style env needles
+        # previously greenwashed PASS while JSON boolean CERTIFIED stayed invisible.
+        allow_j = '"ALLOW_UNPROVEN"' + ": true"
+        # JSON numeric enables (configs/*.json): boolean ": true" needles
+        # previously greenwashed PASS while JSON numeric CERTIFIED stayed invisible.
+        allow_jn = '"ALLOW_UNPROVEN"' + ": 1"
+        # JSON minified enables (configs/*.json): spaced ": true"/": 1" needles
+        # previously greenwashed PASS while JSON.stringify-style minified
+        # colon-true / colon-1 (no space after colon) stayed invisible.
+        allow_jm = '"ALLOW_UNPROVEN"' + ":true"
+        allow_jnm = '"ALLOW_UNPROVEN"' + ":1"
+        # YAML unquoted-key enables (configs/*.yml|*.yaml): JSON-quoted
+        # key needles previously greenwashed PASS while YAML unquoted-key
+        # boolean ": true" forms stayed invisible even though .yml/.yaml
+        # are already in the suffix set.
+        allow_y = "ALLOW_UNPROVEN" + ": true"
+        # YAML unquoted-key numeric: boolean ": true" needles previously
+        # greenwashed PASS while unquoted-key numeric ": 1" forms stayed
+        # invisible under .yml/.yaml already in the suffix set.
+        allow_yn = "ALLOW_UNPROVEN" + ": 1"
+        # YAML unquoted-key minified boolean: spaced ": true" needles previously
+        # greenwashed PASS while flow-style unquoted-key minified colon-true
+        # (no space after colon) stayed invisible under .yml/.yaml already in the
+        # suffix set (JSON minified needles require quoted keys).
+        allow_ym = "ALLOW_UNPROVEN" + ":true"
+        # YAML unquoted-key minified numeric: spaced ": 1" and minified ":true"
+        # needles previously greenwashed PASS while flow-style unquoted-key
+        # minified colon-1 (no space after colon) stayed invisible under
+        # .yml/.yaml already in the suffix set (JSON minified ":1" needles
+        # require quoted keys).
+        allow_ynm = "ALLOW_UNPROVEN" + ":1"
+        if (
+            allow_a in text
+            or allow_b in text
+            or allow_t in text
+            or allow_ts in text
+            or allow_j in text
+            or allow_jn in text
+            or allow_jm in text
+            or allow_jnm in text
+            or allow_y in text
+            or allow_yn in text
+            or allow_ym in text
+            or allow_ynm in text
+        ):
+            banned.append(rel + ": " + allow_a)
+        cert_a = "CERTIFIED" + "=1"
+        # Shell spaced numeric enable: ALLOW_UNPROVEN already has allow_b
+        # (" = 1"); CERTIFIED + "=1"-only previously greenwashed PASS while the
+        # spaced numeric form stayed invisible in scripts/*.sh.
+        cert_as = "certified" + " = 1"
+        cert_b = "certified" + " = true"
+        # Shell env =true (no spaces): spaced certified + " = true" previously
+        # greenwashed PASS while no-space =true stayed invisible in scripts/*.sh.
+        cert_t = "certified" + "=true"
+        cert_j = '"CERTIFIED"' + ": true"
+        cert_jl = '"certified"' + ": true"
+        cert_jn = '"CERTIFIED"' + ": 1"
+        cert_jnl = '"certified"' + ": 1"
+        cert_jm = '"CERTIFIED"' + ":true"
+        cert_jml = '"certified"' + ":true"
+        cert_jnm = '"CERTIFIED"' + ":1"
+        cert_jnml = '"certified"' + ":1"
+        # YAML unquoted-key boolean: JSON quoted-key needles previously
+        # greenwashed PASS while unquoted-key ": true" stayed invisible
+        # under .yml/.yaml already listed in the suffix set.
+        cert_y = "certified" + ": true"
+        # YAML unquoted-key numeric: cert_y ": true" previously greenwashed
+        # PASS while unquoted-key numeric ": 1" stayed invisible under .yml/.yaml.
+        cert_yn = "certified" + ": 1"
+        # YAML unquoted-key minified boolean: cert_y ": true" previously
+        # greenwashed PASS while unquoted-key minified colon-true stayed invisible
+        # under .yml/.yaml (JSON cert_jml requires quoted-key minified form).
+        cert_ym = "certified" + ":true"
+        # YAML unquoted-key minified numeric: cert_yn ": 1" / cert_ym ":true"
+        # previously greenwashed PASS while unquoted-key minified colon-1
+        # stayed invisible under .yml/.yaml (JSON cert_jnml requires
+        # quoted-key minified form).
+        cert_ynm = "certified" + ":1"
+        if (
+            cert_a in text
+            or cert_as in text.lower()
+            or cert_b in text.lower()
+            or cert_t in text.lower()
+            or cert_j in text
+            or cert_jl in text.lower()
+            or cert_jn in text
+            or cert_jnl in text.lower()
+            or cert_jm in text
+            or cert_jml in text.lower()
+            or cert_jnm in text
+            or cert_jnml in text.lower()
+            or cert_y in text.lower()
+            or cert_yn in text.lower()
+            or cert_ym in text.lower()
+            or cert_ynm in text.lower()
+        ):
+            banned.append(rel + ": fake CERTIFIED enable")
     if not banned:
-        pass_("no ALLOW_UNPROVEN/fake CERTIFIED enables in scripts+devtools+configs+media+docs")
+        pass_("no ALLOW_UNPROVEN/fake CERTIFIED enables in scripts+devtools+configs+media+docs+root")
     else:
         fail_("policy violations: " + "; ".join(banned[:5]))
         ok = False
