@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -72,7 +73,7 @@ def main() -> int:
     if not run_gate("enforce --fix", "scripts/enforce/run.sh", ["--fix"]):
         ok = False
     purge_bytecode()
-    if not run_gate("tidy --full", "scripts/tidy/run.sh"):
+    if not run_gate("tidy --full", "scripts/tidy/run.sh", ["--full"]):
         ok = False
     purge_bytecode()
     if not run_gate("verify", "scripts/verify/run.sh"):
@@ -87,4 +88,18 @@ def main() -> int:
     return 1
 
 if __name__ == "__main__":
+    # CE2E_HELP_FASTPATH: harness CLI probes must not run full release-ready
+    _argv = sys.argv[1:]
+    _a = set(_argv)
+    if _a & {"-h", "--help"}:
+        print("usage: scripts/release-ready/run.py [--help]\npower-claude-release-ready: floor gates (enforce+tidy+verify) — use without flags")
+        raise SystemExit(0)
+    if _a & {"-V", "--version"}:
+        print("power-claude-release-ready 1.0.0")
+        raise SystemExit(0)
+    # Fail-closed: unknown argv must not greenwash RELEASE_READY: PASS.
+    if _argv:
+        print("usage: scripts/release-ready/run.py [--help]\npower-claude-release-ready: floor gates (enforce+tidy+verify) — use without flags", file=sys.stderr)
+        print("unrecognized arguments: " + " ".join(_argv), file=sys.stderr)
+        raise SystemExit(2)
     raise SystemExit(main())

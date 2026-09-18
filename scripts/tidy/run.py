@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """tidy --full floor for public power-claude mirror."""
 from __future__ import annotations
+import sys
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 def pass_(m): print("  PASS  " + m, flush=True)
@@ -47,4 +48,22 @@ def main():
     print("TIDY: PASS" if rc == 0 else "TIDY: FAIL")
     return rc
 if __name__ == "__main__":
+    # CE2E_HELP_FASTPATH: harness CLI probes must not run full tidy
+    _argv = sys.argv[1:]
+    _a = set(_argv)
+    if _a & {"-h", "--help"}:
+        print("usage: scripts/tidy/run.py --full\npower-claude-tidy: bytecode/compile/shebang floor — requires --full")
+        raise SystemExit(0)
+    if _a & {"-V", "--version"}:
+        print("power-claude-tidy 1.0.0")
+        raise SystemExit(0)
+    # Fail-closed: advertised floor is tidy --full; bare/unknown argv must not
+    # greenwash TIDY: PASS (ignore-and-run theater). Callers must pass --full.
+    if _argv != ["--full"]:
+        print("usage: scripts/tidy/run.py --full\npower-claude-tidy: bytecode/compile/shebang floor — requires --full", file=sys.stderr)
+        if _argv:
+            print("unrecognized arguments: " + " ".join(_argv), file=sys.stderr)
+        else:
+            print("unrecognized arguments: (missing required --full)", file=sys.stderr)
+        raise SystemExit(2)
     raise SystemExit(main())
