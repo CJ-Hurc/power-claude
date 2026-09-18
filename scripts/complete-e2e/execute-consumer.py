@@ -224,8 +224,23 @@ def main() -> int:
         print("execute-consumer: missing consumer.py", file=sys.stderr)
         return 2
 
+    # Skip-npm cannot greenwash an execute receipt (fabricated missing-marker cases).
+    # Peer refuse: run.py + clean-room-replay.py hard-refuse; do not write partial_skip theater.
+    if os.environ.get("PC_SKIP_NPM") == "1":
+        if RECEIPT_PATH.is_file():
+            RECEIPT_PATH.unlink()
+        print("power-claude complete-e2e (execute-consumer)", file=sys.stderr)
+        print("----------------------------------------", file=sys.stderr)
+        print(
+            "  FAIL  PC_SKIP_NPM=1 refuses execute (not a live package gate)",
+            file=sys.stderr,
+        )
+        print("----------------------------------------", file=sys.stderr)
+        print("EXECUTE: FAIL", file=sys.stderr)
+        return 1
+
     env = os.environ.copy()
-    skipped_npm = env.get("PC_SKIP_NPM") == "1"
+    skipped_npm = False
 
     print("power-claude complete-e2e (execute-consumer)", file=sys.stderr)
     print("----------------------------------------", file=sys.stderr)
