@@ -52,7 +52,7 @@ def main():
     else:
         fail_("bytecode present"); rc = 1
     print("Layer 3 -- required prove entrypoints")
-    required = ["scripts/verify/run.sh", "scripts/verify/run.py", "scripts/complete-e2e/consumer.py", "scripts/complete-e2e/consumer.sh", "scripts/complete-e2e/check_readme_media.py", "scripts/complete-e2e/run.py", "scripts/complete-e2e/run.sh", "scripts/complete-e2e/prove.py", "scripts/complete-e2e/prove.sh", "scripts/complete-e2e/list-surfaces.py", "scripts/complete-e2e/execute-consumer.py", "scripts/complete-e2e/execute-consumer.sh", "configs/complete-e2e/runtime.json", "tests/regression/complete-e2e-prove-receipt.test.sh", "tests/regression/complete-e2e-list-surfaces-no-attest.test.sh", "tests/regression/complete-e2e-execute-receipt.test.sh", "scripts/complete-e2e/clean-room-replay.py", "scripts/complete-e2e/clean-room-replay.sh", "tests/regression/complete-e2e-clean-room-replay.test.sh", "scripts/complete-e2e/check-adapter-paths.py", "scripts/complete-e2e/check-adapter-paths.sh", "tests/regression/complete-e2e-adapter-paths.test.sh", "tests/regression/enforce-runs-fail-closed-regressions.test.sh", "tests/regression/complete-e2e-universal-fault-provers.test.sh", "scripts/complete-e2e/prove/invalid-config.sh", "scripts/complete-e2e/prove/missing-env.sh", "scripts/complete-e2e/prove/build.sh", "scripts/complete-e2e/prove/startup.sh", "scripts/complete-e2e/prove/cleanup.sh", "tests/regression/complete-e2e-universal-lifecycle-provers.test.sh", "scripts/tidy/run.sh", "scripts/tidy/run.py", "scripts/enforce/run.sh", "scripts/enforce/run.py", "scripts/release-ready/run.sh", "scripts/release-ready/run.py", "devtools/enforce/run.sh", "tests/regression/devtools-enforce-not-occupancy-stub.test.sh", "tests/regression/complete-e2e-consumer-refuse-skip-npm.test.sh", "tests/regression/complete-e2e-policy-scan-covers-typescript.test.sh", "tests/regression/complete-e2e-policy-scan-covers-devtools.test.sh", "tests/regression/complete-e2e-policy-scan-covers-configs-json.test.sh", "tests/regression/complete-e2e-layer1-covers-devtools-shell.test.sh", "tests/regression/complete-e2e-policy-scan-covers-media.test.sh", "tests/regression/complete-e2e-policy-scan-covers-svg.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-object-enables.test.sh"]
+    required = ["scripts/verify/run.sh", "scripts/verify/run.py", "scripts/complete-e2e/consumer.py", "scripts/complete-e2e/consumer.sh", "scripts/complete-e2e/check_readme_media.py", "scripts/complete-e2e/run.py", "scripts/complete-e2e/run.sh", "scripts/complete-e2e/prove.py", "scripts/complete-e2e/prove.sh", "scripts/complete-e2e/list-surfaces.py", "scripts/complete-e2e/execute-consumer.py", "scripts/complete-e2e/execute-consumer.sh", "configs/complete-e2e/runtime.json", "tests/regression/complete-e2e-prove-receipt.test.sh", "tests/regression/complete-e2e-list-surfaces-no-attest.test.sh", "tests/regression/complete-e2e-execute-receipt.test.sh", "scripts/complete-e2e/clean-room-replay.py", "scripts/complete-e2e/clean-room-replay.sh", "tests/regression/complete-e2e-clean-room-replay.test.sh", "scripts/complete-e2e/check-adapter-paths.py", "scripts/complete-e2e/check-adapter-paths.sh", "tests/regression/complete-e2e-adapter-paths.test.sh", "tests/regression/enforce-runs-fail-closed-regressions.test.sh", "tests/regression/complete-e2e-universal-fault-provers.test.sh", "scripts/complete-e2e/prove/invalid-config.sh", "scripts/complete-e2e/prove/missing-env.sh", "scripts/complete-e2e/prove/build.sh", "scripts/complete-e2e/prove/startup.sh", "scripts/complete-e2e/prove/cleanup.sh", "tests/regression/complete-e2e-universal-lifecycle-provers.test.sh", "scripts/tidy/run.sh", "scripts/tidy/run.py", "scripts/enforce/run.sh", "scripts/enforce/run.py", "scripts/release-ready/run.sh", "scripts/release-ready/run.py", "devtools/enforce/run.sh", "tests/regression/devtools-enforce-not-occupancy-stub.test.sh", "tests/regression/complete-e2e-consumer-refuse-skip-npm.test.sh", "tests/regression/complete-e2e-policy-scan-covers-typescript.test.sh", "tests/regression/complete-e2e-policy-scan-covers-devtools.test.sh", "tests/regression/complete-e2e-policy-scan-covers-configs-json.test.sh", "tests/regression/complete-e2e-layer1-covers-devtools-shell.test.sh", "tests/regression/complete-e2e-policy-scan-covers-media.test.sh", "tests/regression/complete-e2e-policy-scan-covers-svg.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-object-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-numeric-enables.test.sh"]
     for rel in required:
         if (ROOT / rel).is_file(): pass_("present " + rel)
         else: fail_("missing " + rel); rc = 1
@@ -77,6 +77,7 @@ def main():
         "tests/regression/complete-e2e-policy-scan-covers-media.test.sh",
         "tests/regression/complete-e2e-policy-scan-covers-svg.test.sh",
         "tests/regression/complete-e2e-policy-scan-covers-json-object-enables.test.sh",
+        "tests/regression/complete-e2e-policy-scan-covers-json-numeric-enables.test.sh",
     ]
     for rel in live_regressions:
         script = ROOT / rel
@@ -150,17 +151,24 @@ def main():
             # JSON object enables (configs/*.json): shell-style env needles
             # previously greenwashed PASS while JSON boolean CERTIFIED stayed invisible.
             allow_j = '"ALLOW_UNPROVEN"' + ": true"
-            if allow_a in text or allow_b in text or allow_j in text:
+            # JSON numeric enables (configs/*.json): boolean ": true" needles
+            # previously greenwashed PASS while JSON numeric CERTIFIED stayed invisible.
+            allow_jn = '"ALLOW_UNPROVEN"' + ": 1"
+            if allow_a in text or allow_b in text or allow_j in text or allow_jn in text:
                 banned.append(rel + ": " + allow_a)
             cert_a = "CERTIFIED" + "=1"
             cert_b = "certified" + " = true"
             cert_j = '"CERTIFIED"' + ": true"
             cert_jl = '"certified"' + ": true"
+            cert_jn = '"CERTIFIED"' + ": 1"
+            cert_jnl = '"certified"' + ": 1"
             if (
                 cert_a in text
                 or cert_b in text.lower()
                 or cert_j in text
                 or cert_jl in text.lower()
+                or cert_jn in text
+                or cert_jnl in text.lower()
             ):
                 banned.append(rel + ": fake CERTIFIED enable")
     if not banned:
