@@ -74,11 +74,21 @@ def main() -> int:
             # Build needles without embedding banned assignments as contiguous literals.
             allow_a = "ALLOW_UNPROVEN" + "=1"
             allow_b = "ALLOW_UNPROVEN" + " = 1"
-            if allow_a in text or allow_b in text:
+            # JSON object enables (configs/*.json): shell-style env needles
+            # previously greenwashed PASS while JSON boolean CERTIFIED stayed invisible.
+            allow_j = '"ALLOW_UNPROVEN"' + ": true"
+            if allow_a in text or allow_b in text or allow_j in text:
                 banned.append(rel + ": " + allow_a)
             cert_a = "CERTIFIED" + "=1"
             cert_b = "certified" + " = true"
-            if cert_a in text or cert_b in text.lower():
+            cert_j = '"CERTIFIED"' + ": true"
+            cert_jl = '"certified"' + ": true"
+            if (
+                cert_a in text
+                or cert_b in text.lower()
+                or cert_j in text
+                or cert_jl in text.lower()
+            ):
                 banned.append(rel + ": fake CERTIFIED enable")
     if not banned:
         pass_("no ALLOW_UNPROVEN/fake CERTIFIED enables in scripts+devtools+configs+media")
