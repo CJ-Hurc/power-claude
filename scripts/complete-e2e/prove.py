@@ -243,8 +243,22 @@ def _receipt_mode(argv: list[str]) -> int:
         print("usage: prove.py --receipt [--out PATH]", file=sys.stderr)
         return 2
 
+    # Skip-npm cannot greenwash a prove receipt (fabricated packed_*/marketplace missing markers).
+    if os.environ.get("PC_SKIP_NPM") == "1":
+        if RECEIPT_PATH.is_file():
+            RECEIPT_PATH.unlink()
+        print("power-claude complete-e2e (prove-receipt)", file=sys.stderr)
+        print("----------------------------------------", file=sys.stderr)
+        print(
+            "  FAIL  PC_SKIP_NPM=1 refuses prove --receipt (not a live package gate)",
+            file=sys.stderr,
+        )
+        print("----------------------------------------", file=sys.stderr)
+        print("COMPLETE_E2E: FAIL", file=sys.stderr)
+        return 1
+
     env = os.environ.copy()
-    skipped_npm = env.get("PC_SKIP_NPM") == "1"
+    skipped_npm = False
 
     print("power-claude complete-e2e (prove-receipt)", file=sys.stderr)
     print("----------------------------------------", file=sys.stderr)
@@ -360,6 +374,17 @@ def main() -> int:
         print("unrecognized arguments: " + " ".join(argv), file=sys.stderr)
         return 2
 
+    # Skip-npm cannot greenwash a diagnostic prove-receipt (partial_skip theater).
+    if os.environ.get("PC_SKIP_NPM") == "1":
+        if RECEIPT_PATH.is_file():
+            RECEIPT_PATH.unlink()
+        print(
+            "  FAIL  PC_SKIP_NPM=1 refuses prove (not a live package gate)",
+            file=sys.stderr,
+        )
+        print("COMPLETE_E2E: FAIL", file=sys.stderr)
+        return 1
+
     # Default: live wrap of run.py for human COMPLETE_E2E output.
     # Theater-kill: NEVER attest behavior_proven without --receipt (rich execute path).
     # A file receipt may exist for diagnostics but behavior_proven stays false.
@@ -368,7 +393,6 @@ def main() -> int:
         cwd=str(ROOT),
     )
     ok_live = proc.returncode == 0
-    skipped_npm = os.environ.get("PC_SKIP_NPM") == "1"
     cases = [
         {
             "id": "readme_media",
@@ -377,7 +401,7 @@ def main() -> int:
         },
         {
             "id": "consumer_complete_e2e",
-            "ok": ok_live and not skipped_npm,
+            "ok": ok_live,
             "detail": "bundled via run.py (see live output); use --receipt to attest",
         },
     ]
@@ -385,9 +409,7 @@ def main() -> int:
         "schema": SCHEMA,
         "ok": False,
         "environment_status": (
-            "receipt_mode_required"
-            if ok_live and not skipped_npm
-            else ("partial_skip_npm" if skipped_npm else "prove_failed")
+            "receipt_mode_required" if ok_live else "prove_failed"
         ),
         "blocked_environment": False,
         # Fail-closed: only prove.py --receipt (execute-consumer rich cases) may attest.
