@@ -53,25 +53,32 @@ def main() -> int:
     ok = True
     print("Gate -- policy scan (no ALLOW_UNPROVEN / fake CERTIFIED)")
     banned = []
-    for path in sorted((ROOT / "scripts").rglob("*")):
-        if ".git" in path.parts or not path.is_file():
+    # Scan scripts/ and devtools/: required dual-origin enforce CLI lives under
+    # devtools/enforce/run.sh — scripts-only scan previously greenwashed PASS
+    # while a fake CERTIFIED enable in that required proof input stayed invisible.
+    policy_roots = [ROOT / "scripts", ROOT / "devtools"]
+    for policy_root in policy_roots:
+        if not policy_root.is_dir():
             continue
-        if path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts"}:
-            continue
-        text = path.read_text(encoding="utf-8", errors="replace")
-        rel = str(path.relative_to(ROOT))
-        # Comments stating the ban are OK; assignments / enables are not.
-        # Build needles without embedding banned assignments as contiguous literals.
-        allow_a = "ALLOW_UNPROVEN" + "=1"
-        allow_b = "ALLOW_UNPROVEN" + " = 1"
-        if allow_a in text or allow_b in text:
-            banned.append(rel + ": " + allow_a)
-        cert_a = "CERTIFIED" + "=1"
-        cert_b = "certified" + " = true"
-        if cert_a in text or cert_b in text.lower():
-            banned.append(rel + ": fake CERTIFIED enable")
+        for path in sorted(policy_root.rglob("*")):
+            if ".git" in path.parts or not path.is_file():
+                continue
+            if path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts"}:
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+            rel = str(path.relative_to(ROOT))
+            # Comments stating the ban are OK; assignments / enables are not.
+            # Build needles without embedding banned assignments as contiguous literals.
+            allow_a = "ALLOW_UNPROVEN" + "=1"
+            allow_b = "ALLOW_UNPROVEN" + " = 1"
+            if allow_a in text or allow_b in text:
+                banned.append(rel + ": " + allow_a)
+            cert_a = "CERTIFIED" + "=1"
+            cert_b = "certified" + " = true"
+            if cert_a in text or cert_b in text.lower():
+                banned.append(rel + ": fake CERTIFIED enable")
     if not banned:
-        pass_("no ALLOW_UNPROVEN/fake CERTIFIED enables in scripts")
+        pass_("no ALLOW_UNPROVEN/fake CERTIFIED enables in scripts+devtools")
     else:
         fail_("policy violations: " + "; ".join(banned[:5]))
         ok = False
