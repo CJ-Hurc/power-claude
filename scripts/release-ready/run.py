@@ -103,6 +103,12 @@ def main() -> int:
             # (no space after colon) stayed invisible under .yml/.yaml already in the
             # suffix set (JSON minified needles require quoted keys).
             allow_ym = "ALLOW_UNPROVEN" + ":true"
+            # YAML unquoted-key minified numeric: spaced ": 1" and minified ":true"
+            # needles previously greenwashed PASS while flow-style unquoted-key
+            # minified colon-1 (no space after colon) stayed invisible under
+            # .yml/.yaml already in the suffix set (JSON minified ":1" needles
+            # require quoted keys).
+            allow_ynm = "ALLOW_UNPROVEN" + ":1"
             if (
                 allow_a in text
                 or allow_b in text
@@ -115,6 +121,7 @@ def main() -> int:
                 or allow_y in text
                 or allow_yn in text
                 or allow_ym in text
+                or allow_ynm in text
             ):
                 banned.append(rel + ": " + allow_a)
             cert_a = "CERTIFIED" + "=1"
@@ -145,6 +152,11 @@ def main() -> int:
             # greenwashed PASS while unquoted-key minified colon-true stayed invisible
             # under .yml/.yaml (JSON cert_jml requires quoted-key minified form).
             cert_ym = "certified" + ":true"
+            # YAML unquoted-key minified numeric: cert_yn ": 1" / cert_ym ":true"
+            # previously greenwashed PASS while unquoted-key minified colon-1
+            # stayed invisible under .yml/.yaml (JSON cert_jnml requires
+            # quoted-key minified form).
+            cert_ynm = "certified" + ":1"
             if (
                 cert_a in text
                 or cert_as in text.lower()
@@ -161,6 +173,7 @@ def main() -> int:
                 or cert_y in text.lower()
                 or cert_yn in text.lower()
                 or cert_ym in text.lower()
+                or cert_ynm in text.lower()
             ):
                 banned.append(rel + ": fake CERTIFIED enable")
     if not banned:
