@@ -83,11 +83,14 @@ def main():
     print("Layer 5 -- runtime.json adapter argv paths (MISSING_PROVER)")
     gate = ROOT / "scripts/complete-e2e/check-adapter-paths.py"
     if gate.is_file():
+        env = os.environ.copy()
+        env["PYTHONDONTWRITEBYTECODE"] = "1"
         r = subprocess.run(
             [sys.executable, str(gate)],
             cwd=str(ROOT),
             capture_output=True,
             text=True,
+            env=env,
         )
         if r.returncode == 0:
             pass_("adapter argv paths present")
@@ -120,7 +123,13 @@ def main():
     else:
         fail_("policy violations: " + "; ".join(banned[:5])); rc = 1
     print("Layer 7 -- tidy --full after enforce")
-
+    # Purge any bytecode left by earlier layers so tidy Layer 1 starts clean
+    # (same removal logic as Layer 2 --fix).
+    junk = [p for p in ROOT.rglob("*") if ".git" not in p.parts and (p.name == "__pycache__" or p.suffix == ".pyc")]
+    for p in junk:
+        if p.is_dir(): shutil.rmtree(p, ignore_errors=True)
+        elif p.exists(): p.unlink()
+        info_("pre-tidy removed " + str(p.relative_to(ROOT)))
     tidy = ROOT / "scripts/tidy/run.sh"
     if tidy.is_file():
         r = subprocess.run(["bash", str(tidy)], cwd=str(ROOT))

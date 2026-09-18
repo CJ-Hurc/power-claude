@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """tidy --full floor for public power-claude mirror."""
 from __future__ import annotations
-import py_compile
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 def pass_(m): print("  PASS  " + m, flush=True)
@@ -26,7 +25,8 @@ def main():
     for py in py_files:
         if "__pycache__" in py.parts: continue
         try:
-            py_compile.compile(str(py), doraise=True)
+            # compile() checks syntax without writing __pycache__/.pyc
+            compile(py.read_text(encoding="utf-8"), str(py), "exec")
             pass_("compile " + str(py.relative_to(ROOT)))
         except Exception as e:
             fail_("compile " + str(py.relative_to(ROOT)) + ": " + str(e))
