@@ -53,18 +53,19 @@ def main() -> int:
     ok = True
     print("Gate -- policy scan (no ALLOW_UNPROVEN / fake CERTIFIED)")
     banned = []
-    # Scan scripts/, devtools/, and configs/: required runtime.json lives under
-    # configs/complete-e2e/ — scripts+devtools-only scan previously greenwashed PASS
-    # while a fake CERTIFIED enable in that required proof input stayed invisible.
-    # .json must be in the suffix set or configs/*.json stays a blind spot.
-    policy_roots = [ROOT / "scripts", ROOT / "devtools", ROOT / "configs"]
+    # Scan scripts/, devtools/, configs/, and media/: verify requires media/;
+    # shipping loaders live under media/loaders/*.js|*.html — scripts+devtools+configs
+    # only previously greenwashed PASS while a fake CERTIFIED enable in that required
+    # product surface stayed invisible. .js/.html must be in the suffix set or
+    # media/loaders/*.js stays a blind spot.
+    policy_roots = [ROOT / "scripts", ROOT / "devtools", ROOT / "configs", ROOT / "media"]
     for policy_root in policy_roots:
         if not policy_root.is_dir():
             continue
         for path in sorted(policy_root.rglob("*")):
             if ".git" in path.parts or not path.is_file():
                 continue
-            if path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts", ".json"}:
+            if path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts", ".json", ".js", ".html"}:
                 continue
             text = path.read_text(encoding="utf-8", errors="replace")
             rel = str(path.relative_to(ROOT))
@@ -79,7 +80,7 @@ def main() -> int:
             if cert_a in text or cert_b in text.lower():
                 banned.append(rel + ": fake CERTIFIED enable")
     if not banned:
-        pass_("no ALLOW_UNPROVEN/fake CERTIFIED enables in scripts+devtools+configs")
+        pass_("no ALLOW_UNPROVEN/fake CERTIFIED enables in scripts+devtools+configs+media")
     else:
         fail_("policy violations: " + "; ".join(banned[:5]))
         ok = False
