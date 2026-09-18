@@ -1,6 +1,6 @@
 {
   "schema": "hurc-complete-e2e-runtime/v1",
-  "description": "Discovery-only adapters. Prove/check scripts under scripts/complete-e2e/ are occupancy (exec), not surface listers — kind=prover PARSE_FAILURE-blocks the campaign on this engine grain.",
+  "description": "Surface-list, execute, prove, clean-room-replay, and adapter-path-check adapters. kind=prover entries are fail-closed and attest behavior_proven only after real live execution.",
   "adapters": [
     {
       "id": "power-claude-list-surfaces",
@@ -10,6 +10,50 @@
       "argv": [
         "python3",
         "scripts/complete-e2e/list-surfaces.py"
+      ]
+    },
+    {
+      "id": "power-claude-execute-consumer",
+      "kind": "executor",
+      "surface_kind": "cli",
+      "timeout_sec": 300,
+      "argv": [
+        "python3",
+        "scripts/complete-e2e/execute-consumer.py"
+      ]
+    },
+    {
+      "id": "power-claude-prove-receipt",
+      "kind": "prover",
+      "surface_kind": "cli",
+      "timeout_sec": 600,
+      "fail_closed_on_unreachable": true,
+      "argv": [
+        "python3",
+        "scripts/complete-e2e/prove.py",
+        "--receipt"
+      ]
+    },
+    {
+      "id": "power-claude-clean-room-replay",
+      "kind": "prover",
+      "surface_kind": "cli",
+      "timeout_sec": 600,
+      "fail_closed_on_unreachable": true,
+      "argv": [
+        "python3",
+        "scripts/complete-e2e/clean-room-replay.py"
+      ]
+    },
+    {
+      "id": "power-claude-adapter-paths",
+      "kind": "prover",
+      "surface_kind": "cli",
+      "timeout_sec": 30,
+      "fail_closed_on_unreachable": true,
+      "argv": [
+        "python3",
+        "scripts/complete-e2e/check-adapter-paths.py"
       ]
     }
   ]
