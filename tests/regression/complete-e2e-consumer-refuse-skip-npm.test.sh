@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Fail-closed gate: PC_SKIP_NPM=1 must not greenwash consumer / complete-e2e /
-# verify / execute-consumer / prove with rc=0, fabricated receipts, or PASS.
+# verify / execute-consumer / prove / release-ready / enforce with rc=0,
+# fabricated receipts, or PASS (including strip-and-run theater).
 set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 CONSUMER="$ROOT/scripts/complete-e2e/consumer.py"
@@ -8,6 +9,8 @@ RUN_E2E="$ROOT/scripts/complete-e2e/run.py"
 VERIFY="$ROOT/scripts/verify/run.py"
 EXECUTE="$ROOT/scripts/complete-e2e/execute-consumer.py"
 PROVE="$ROOT/scripts/complete-e2e/prove.py"
+RELEASE_READY="$ROOT/scripts/release-ready/run.py"
+ENFORCE="$ROOT/scripts/enforce/run.py"
 EXEC_RECEIPT="$ROOT/scripts/complete-e2e/.receipts/execute-receipt.json"
 PROVE_RECEIPT="$ROOT/scripts/complete-e2e/.receipts/prove-receipt.json"
 
@@ -16,6 +19,8 @@ PROVE_RECEIPT="$ROOT/scripts/complete-e2e/.receipts/prove-receipt.json"
 [[ -f "$VERIFY" ]] || { echo "FAIL skip-npm-refuse: missing verify/run.py" >&2; exit 1; }
 [[ -f "$EXECUTE" ]] || { echo "FAIL skip-npm-refuse: missing execute-consumer.py" >&2; exit 1; }
 [[ -f "$PROVE" ]] || { echo "FAIL skip-npm-refuse: missing prove.py" >&2; exit 1; }
+[[ -f "$RELEASE_READY" ]] || { echo "FAIL skip-npm-refuse: missing release-ready/run.py" >&2; exit 1; }
+[[ -f "$ENFORCE" ]] || { echo "FAIL skip-npm-refuse: missing enforce/run.py" >&2; exit 1; }
 
 # Theater-kill: consumer must not keep the old "package layer skipped" success path.
 if grep -qE 'print\(.*package layer skipped' "$CONSUMER"; then
@@ -28,6 +33,10 @@ grep -q 'PC_SKIP_NPM' "$EXECUTE" \
   || { echo "FAIL skip-npm-refuse: execute-consumer.py must mention PC_SKIP_NPM refuse" >&2; exit 1; }
 grep -q 'PC_SKIP_NPM' "$PROVE" \
   || { echo "FAIL skip-npm-refuse: prove.py must mention PC_SKIP_NPM refuse" >&2; exit 1; }
+grep -q 'PC_SKIP_NPM=1 refuses release-ready' "$RELEASE_READY" \
+  || { echo "FAIL skip-npm-refuse: release-ready must refuse PC_SKIP_NPM at entry" >&2; exit 1; }
+grep -q 'PC_SKIP_NPM=1 refuses enforce' "$ENFORCE" \
+  || { echo "FAIL skip-npm-refuse: enforce must refuse PC_SKIP_NPM at entry" >&2; exit 1; }
 
 tmp="$(mktemp -d "${TMPDIR:-/tmp}/pc-skip-npm-refuse-XXXXXX")"
 trap 'rm -rf "$tmp"' EXIT
@@ -99,4 +108,26 @@ printf '%s' "$pd_text" | grep -qiE 'PC_SKIP_NPM|refuses prove|COMPLETE_E2E: FAIL
 [[ ! -f "$PROVE_RECEIPT" ]] \
   || { echo "FAIL skip-npm-refuse: prove-receipt.json survived skip refuse" >&2; cat "$PROVE_RECEIPT" >&2; exit 1; }
 
-echo "PASS complete-e2e-consumer-refuse-skip-npm: consumer+run+verify+execute+prove refuse PC_SKIP_NPM=1 (no greenwash PASS/fabricated receipts)"
+set +e
+PC_SKIP_NPM=1 python3 "$RELEASE_READY" >"$tmp/rr.out" 2>"$tmp/rr.err"
+rr_rc=$?
+PC_SKIP_NPM=1 python3 "$ENFORCE" >"$tmp/en.out" 2>"$tmp/en.err"
+en_rc=$?
+set -e
+
+rr_text="$(cat "$tmp/rr.out" "$tmp/rr.err" 2>/dev/null || true)"
+en_text="$(cat "$tmp/en.out" "$tmp/en.err" 2>/dev/null || true)"
+
+[[ "$rr_rc" -ne 0 ]] || { echo "FAIL skip-npm-refuse: release-ready rc=0 under PC_SKIP_NPM"$'\n'"$rr_text" >&2; exit 1; }
+printf '%s' "$rr_text" | grep -qiE 'PC_SKIP_NPM|refuses release-ready|RELEASE_READY: FAIL' \
+  || { echo "FAIL skip-npm-refuse: release-ready refuse/FAIL missing"$'\n'"$rr_text" >&2; exit 1; }
+printf '%s' "$rr_text" | grep -qiE 'RELEASE_READY: PASS' \
+  && { echo "FAIL skip-npm-refuse: release-ready still RELEASE_READY: PASS under skip (strip-and-run theater)"$'\n'"$rr_text" >&2; exit 1; }
+
+[[ "$en_rc" -ne 0 ]] || { echo "FAIL skip-npm-refuse: enforce rc=0 under PC_SKIP_NPM"$'\n'"$en_text" >&2; exit 1; }
+printf '%s' "$en_text" | grep -qiE 'PC_SKIP_NPM|refuses enforce|ENFORCE: FAIL' \
+  || { echo "FAIL skip-npm-refuse: enforce refuse/FAIL missing"$'\n'"$en_text" >&2; exit 1; }
+printf '%s' "$en_text" | grep -qiE 'ENFORCE: PASS' \
+  && { echo "FAIL skip-npm-refuse: enforce still ENFORCE: PASS under skip (strip-and-run theater)"$'\n'"$en_text" >&2; exit 1; }
+
+echo "PASS complete-e2e-consumer-refuse-skip-npm: consumer+run+verify+execute+prove+release-ready+enforce refuse PC_SKIP_NPM=1 (no greenwash PASS/fabricated receipts)"

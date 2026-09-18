@@ -43,6 +43,12 @@ def main() -> int:
     print("power-claude release-ready")
     print("----------------------------------------")
     print("Policy: never ALLOW_UNPROVEN; never fake CERTIFIED")
+    # Skip-npm cannot greenwash RELEASE_READY: PASS (strip-and-run theater via env.pop).
+    if os.environ.get("PC_SKIP_NPM") == "1":
+        fail_("PC_SKIP_NPM=1 refuses release-ready (not a live package gate)")
+        print("----------------------------------------")
+        print("RELEASE_READY: FAIL")
+        return 1
     purge_bytecode()
     ok = True
     print("Gate -- policy scan (no ALLOW_UNPROVEN / fake CERTIFIED)")
