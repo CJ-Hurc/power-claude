@@ -54,10 +54,11 @@ def main() -> int:
     print("Gate -- policy scan (no ALLOW_UNPROVEN / fake CERTIFIED)")
     banned = []
     # Scan scripts/, devtools/, configs/, and media/: verify requires media/;
-    # shipping loaders live under media/loaders/*.js|*.html — scripts+devtools+configs
-    # only previously greenwashed PASS while a fake CERTIFIED enable in that required
-    # product surface stayed invisible. .js/.html must be in the suffix set or
-    # media/loaders/*.js stays a blind spot.
+    # shipping loaders live under media/loaders/*.js|*.html and consumer requires
+    # media/icon.svg — scripts+devtools+configs-only previously greenwashed PASS
+    # while a fake CERTIFIED enable in that required product surface stayed
+    # invisible. .js/.html/.svg must be in the suffix set or media/*.svg stays
+    # a blind spot.
     policy_roots = [ROOT / "scripts", ROOT / "devtools", ROOT / "configs", ROOT / "media"]
     for policy_root in policy_roots:
         if not policy_root.is_dir():
@@ -65,7 +66,7 @@ def main() -> int:
         for path in sorted(policy_root.rglob("*")):
             if ".git" in path.parts or not path.is_file():
                 continue
-            if path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts", ".json", ".js", ".html"}:
+            if path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts", ".json", ".js", ".html", ".svg"}:
                 continue
             text = path.read_text(encoding="utf-8", errors="replace")
             rel = str(path.relative_to(ROOT))
