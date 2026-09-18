@@ -53,13 +53,15 @@ def main() -> int:
     ok = True
     print("Gate -- policy scan (no ALLOW_UNPROVEN / fake CERTIFIED)")
     banned = []
-    # Scan scripts/, devtools/, configs/, and media/: verify requires media/;
+    # Scan scripts/, devtools/, configs/, media/, and docs/: verify requires media/;
     # shipping loaders live under media/loaders/*.js|*.html and consumer requires
     # media/icon.svg — scripts+devtools+configs-only previously greenwashed PASS
     # while a fake CERTIFIED enable in that required product surface stayed
     # invisible. .js/.html/.svg must be in the suffix set or media/*.svg stays
-    # a blind spot.
-    policy_roots = [ROOT / "scripts", ROOT / "devtools", ROOT / "configs", ROOT / "media"]
+    # a blind spot. docs/complete-e2e operator notes are .md (already in suffix
+    # set) but docs/ was omitted from roots — a fake CERTIFIED enable under docs/ greenwashed
+    # policy PASS while scripts+devtools+configs+media stayed "clean".
+    policy_roots = [ROOT / "scripts", ROOT / "devtools", ROOT / "configs", ROOT / "media", ROOT / "docs"]
     for policy_root in policy_roots:
         if not policy_root.is_dir():
             continue
@@ -177,7 +179,7 @@ def main() -> int:
             ):
                 banned.append(rel + ": fake CERTIFIED enable")
     if not banned:
-        pass_("no ALLOW_UNPROVEN/fake CERTIFIED enables in scripts+devtools+configs+media")
+        pass_("no ALLOW_UNPROVEN/fake CERTIFIED enables in scripts+devtools+configs+media+docs")
     else:
         fail_("policy violations: " + "; ".join(banned[:5]))
         ok = False
