@@ -73,4 +73,41 @@ printf '%s' "$clean_text" | grep -q 'PASS cleanup' \
 printf '%s' "$build_text$start_text$clean_text" | grep -qiE ': occupied' \
   && { echo "FAIL universal-lifecycle: output still says occupied" >&2; exit 1; }
 
+
+# Theater-kill: lifecycle provers must refuse PC_SKIP_NPM=1 (no greenwash PASS).
+# Sibling build.sh already refuses; startup+cleanup must match.
+grep -q 'PC_SKIP_NPM' "$BUILD" || { echo "FAIL universal-lifecycle: build.sh must refuse PC_SKIP_NPM" >&2; exit 1; }
+grep -q 'PC_SKIP_NPM' "$START" || { echo "FAIL universal-lifecycle: startup.sh must refuse PC_SKIP_NPM" >&2; exit 1; }
+grep -q 'PC_SKIP_NPM' "$CLEAN" || { echo "FAIL universal-lifecycle: cleanup.sh must refuse PC_SKIP_NPM" >&2; exit 1; }
+
+set +e
+PC_SKIP_NPM=1 bash "$BUILD" >"$tmp/skip-build.out" 2>"$tmp/skip-build.err"
+skip_build_rc=$?
+PC_SKIP_NPM=1 bash "$START" >"$tmp/skip-start.out" 2>"$tmp/skip-start.err"
+skip_start_rc=$?
+PC_SKIP_NPM=1 bash "$CLEAN" >"$tmp/skip-clean.out" 2>"$tmp/skip-clean.err"
+skip_clean_rc=$?
+set -e
+skip_build_text="$(cat "$tmp/skip-build.out" "$tmp/skip-build.err" 2>/dev/null || true)"
+skip_start_text="$(cat "$tmp/skip-start.out" "$tmp/skip-start.err" 2>/dev/null || true)"
+skip_clean_text="$(cat "$tmp/skip-clean.out" "$tmp/skip-clean.err" 2>/dev/null || true)"
+
+[[ "$skip_build_rc" -ne 0 ]] || { echo "FAIL universal-lifecycle: build.sh rc=0 under PC_SKIP_NPM"$'
+'"$skip_build_text" >&2; exit 1; }
+printf '%s' "$skip_build_text" | grep -qiE 'PC_SKIP_NPM|refuses'   || { echo "FAIL universal-lifecycle: build skip refuse diagnostic missing"$'
+'"$skip_build_text" >&2; exit 1; }
+printf '%s' "$skip_build_text" | grep -q 'PASS build'   && { echo "FAIL universal-lifecycle: build still PASS under PC_SKIP_NPM" >&2; exit 1; }
+
+[[ "$skip_start_rc" -ne 0 ]] || { echo "FAIL universal-lifecycle: startup.sh rc=0 under PC_SKIP_NPM"$'
+'"$skip_start_text" >&2; exit 1; }
+printf '%s' "$skip_start_text" | grep -qiE 'PC_SKIP_NPM|refuses'   || { echo "FAIL universal-lifecycle: startup skip refuse diagnostic missing"$'
+'"$skip_start_text" >&2; exit 1; }
+printf '%s' "$skip_start_text" | grep -q 'PASS startup'   && { echo "FAIL universal-lifecycle: startup still PASS under PC_SKIP_NPM" >&2; exit 1; }
+
+[[ "$skip_clean_rc" -ne 0 ]] || { echo "FAIL universal-lifecycle: cleanup.sh rc=0 under PC_SKIP_NPM"$'
+'"$skip_clean_text" >&2; exit 1; }
+printf '%s' "$skip_clean_text" | grep -qiE 'PC_SKIP_NPM|refuses'   || { echo "FAIL universal-lifecycle: cleanup skip refuse diagnostic missing"$'
+'"$skip_clean_text" >&2; exit 1; }
+printf '%s' "$skip_clean_text" | grep -q 'PASS cleanup'   && { echo "FAIL universal-lifecycle: cleanup still PASS under PC_SKIP_NPM" >&2; exit 1; }
+
 echo "PASS complete-e2e-universal-lifecycle-provers: build+startup+cleanup real (not occupied theater)"

@@ -6,7 +6,7 @@
 # Inputs   : cwd = repo root.
 # Outputs  : PASS/FAIL on stdout.
 # Exit codes: 0 product fail-closed / 1 product accepted invalid option / 2 usage
-# Side effects: none (never runs full consumer/prove — reject path only).
+# Side effects: none (never runs full consumer/prove — reject path only; no PC_SKIP_NPM greenwash).
 # -----------------------------------------------------------------------------
 set -uo pipefail
 
@@ -25,6 +25,11 @@ fi
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 cd "$ROOT" || exit 2
 fail() { echo "FAIL: $*" >&2; exit 1; }
+
+# Refuse skip-env theater: invalid-config must not claim PASS under PC_SKIP_NPM.
+if [[ "${PC_SKIP_NPM:-}" == "1" ]]; then
+	fail "PC_SKIP_NPM=1 refuses invalid-config prove (not a clean fail-closed gate)"
+fi
 
 command -v python3 >/dev/null 2>&1 || fail "python3 missing"
 [[ -f "$ROOT/scripts/complete-e2e/list-surfaces.py" ]] || fail "list-surfaces.py missing"
