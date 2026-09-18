@@ -74,6 +74,10 @@ def main() -> int:
             # Build needles without embedding banned assignments as contiguous literals.
             allow_a = "ALLOW_UNPROVEN" + "=1"
             allow_b = "ALLOW_UNPROVEN" + " = 1"
+            # Shell =true enables (scripts/*.sh): =1 / " = 1" needles previously
+            # greenwashed PASS while env =true forms stayed invisible.
+            allow_t = "ALLOW_UNPROVEN" + "=true"
+            allow_ts = "ALLOW_UNPROVEN" + " = true"
             # JSON object enables (configs/*.json): shell-style env needles
             # previously greenwashed PASS while JSON boolean CERTIFIED stayed invisible.
             allow_j = '"ALLOW_UNPROVEN"' + ": true"
@@ -88,6 +92,8 @@ def main() -> int:
             if (
                 allow_a in text
                 or allow_b in text
+                or allow_t in text
+                or allow_ts in text
                 or allow_j in text
                 or allow_jn in text
                 or allow_jm in text
@@ -96,6 +102,9 @@ def main() -> int:
                 banned.append(rel + ": " + allow_a)
             cert_a = "CERTIFIED" + "=1"
             cert_b = "certified" + " = true"
+            # Shell env =true (no spaces): spaced certified + " = true" previously
+            # greenwashed PASS while no-space =true stayed invisible in scripts/*.sh.
+            cert_t = "certified" + "=true"
             cert_j = '"CERTIFIED"' + ": true"
             cert_jl = '"certified"' + ": true"
             cert_jn = '"CERTIFIED"' + ": 1"
@@ -107,6 +116,7 @@ def main() -> int:
             if (
                 cert_a in text
                 or cert_b in text.lower()
+                or cert_t in text.lower()
                 or cert_j in text
                 or cert_jl in text.lower()
                 or cert_jn in text
