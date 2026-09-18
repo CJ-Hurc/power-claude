@@ -103,6 +103,11 @@ def main() -> int:
         # greenwashed PASS while env =true forms stayed invisible.
         allow_t = "ALLOW_UNPROVEN" + "=true"
         allow_ts = "ALLOW_UNPROVEN" + " = true"
+        # Shell quoted numeric enables (scripts/*.sh): =1 / " = 1" needles
+        # previously greenwashed PASS while CERTIFIED= + quoted-1 / ALLOW_UNPROVEN= + quoted-1
+        # (and single-quoted ='1') stayed invisible in required product scripts/.
+        allow_dq = "ALLOW_UNPROVEN" + '="1"'
+        allow_sq = "ALLOW_UNPROVEN" + "='1'"
         # JSON object enables (configs/*.json): shell-style env needles
         # previously greenwashed PASS while JSON boolean CERTIFIED stayed invisible.
         allow_j = '"ALLOW_UNPROVEN"' + ": true"
@@ -139,6 +144,8 @@ def main() -> int:
             or allow_b in text
             or allow_t in text
             or allow_ts in text
+            or allow_dq in text
+            or allow_sq in text
             or allow_j in text
             or allow_jn in text
             or allow_jm in text
@@ -158,6 +165,11 @@ def main() -> int:
         # Shell env =true (no spaces): spaced certified + " = true" previously
         # greenwashed PASS while no-space =true stayed invisible in scripts/*.sh.
         cert_t = "certified" + "=true"
+        # Shell quoted numeric: unquoted =1 / cert_as spaced = 1 previously
+        # greenwashed PASS while CERTIFIED= + quoted-1 / CERTIFIED= + single-quoted-1 stayed invisible
+        # in scripts/*.sh (quotes break the contiguous =1 needle).
+        cert_dq = "certified=" + '"1"'
+        cert_sq = "certified=" + "'1'"
         cert_j = '"CERTIFIED"' + ": true"
         cert_jl = '"certified"' + ": true"
         cert_jn = '"CERTIFIED"' + ": 1"
@@ -187,6 +199,8 @@ def main() -> int:
             or cert_as in text.lower()
             or cert_b in text.lower()
             or cert_t in text.lower()
+            or cert_dq in text.lower()
+            or cert_sq in text.lower()
             or cert_j in text
             or cert_jl in text.lower()
             or cert_jn in text
