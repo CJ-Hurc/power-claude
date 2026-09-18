@@ -29,6 +29,13 @@ grep -q 'scripts/bin/clean-room-replay.sh' "$START" || { echo "FAIL universal-li
 grep -q 'scripts/bin/check-adapter-paths.sh' "$START" || { echo "FAIL universal-lifecycle: startup.sh must cover dual-origin bin check-adapter-paths" >&2; exit 1; }
 grep -q 'scripts/complete-e2e/prove.sh' "$START" || { echo "FAIL universal-lifecycle: startup.sh must exercise complete-e2e prove wrapper --help" >&2; exit 1; }
 grep -q 'power-claude' "$START" || { echo "FAIL universal-lifecycle: startup.sh must require power-claude help identity" >&2; exit 1; }
+grep -q 'list-surfaces.py' "$START" || { echo "FAIL universal-lifecycle: startup.sh must exercise list-surfaces --help" >&2; exit 1; }
+# Theater-kill: list-surfaces help must carry power-claude identity (not bare argparse).
+list_surfaces_help="$(python3 "$ROOT/scripts/complete-e2e/list-surfaces.py" --help 2>&1 || true)"
+printf '%s' "$list_surfaces_help" | grep -qiE 'usage:' \
+  || { echo "FAIL universal-lifecycle: list-surfaces --help missing usage" >&2; exit 1; }
+printf '%s' "$list_surfaces_help" | grep -qiE 'power-claude' \
+  || { echo "FAIL universal-lifecycle: list-surfaces --help missing power-claude identity (stub help theater)" >&2; exit 1; }
 # Theater-kill: complete-e2e wrappers must not stub --help.
 for w in \
   "$ROOT/scripts/complete-e2e/prove.sh" \
