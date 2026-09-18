@@ -11,6 +11,12 @@ def main():
     do_fix = "--fix" in sys.argv
     print("power-claude enforce" + (" --fix" if do_fix else ""))
     print("----------------------------------------")
+    # Skip-npm cannot greenwash ENFORCE: PASS (regression env.pop strip-and-run theater).
+    if os.environ.get("PC_SKIP_NPM") == "1":
+        fail_("PC_SKIP_NPM=1 refuses enforce (not a live package gate)")
+        print("----------------------------------------")
+        print("ENFORCE: FAIL")
+        return 1
     rc = 0
     scripts_root = ROOT / "scripts"
     print("Layer 1 -- shell scripts executable + shebang")
