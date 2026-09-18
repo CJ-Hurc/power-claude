@@ -27,6 +27,7 @@ grep -q 'verify/run.py' "$INV" || { echo "FAIL universal-fault: invalid-config.s
 grep -q 'tidy/run.py' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must cover tidy/run.py" >&2; exit 1; }
 grep -q 'enforce/run.py' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must cover enforce/run.py" >&2; exit 1; }
 grep -q 'release-ready/run.py' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must cover release-ready/run.py" >&2; exit 1; }
+grep -q 'check_readme_media.py' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must cover check_readme_media.py" >&2; exit 1; }
 grep -q 'clean-room-replay.py' "$MISS" || { echo "FAIL universal-fault: missing-env.sh must invoke clean-room-replay.py" >&2; exit 1; }
 grep -q 'PC_SKIP_NPM' "$MISS" || { echo "FAIL universal-fault: missing-env.sh must force PC_SKIP_NPM=1" >&2; exit 1; }
 
