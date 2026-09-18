@@ -349,6 +349,17 @@ def main() -> int:
     if "--receipt" in a:
         return _receipt_mode(argv)
 
+    # Fail-closed: default mode accepts no argv (unknown flags must not greenwash).
+    if argv:
+        print(
+            "usage: scripts/complete-e2e/prove.py [--help]\n"
+            "power-claude-prove: wraps execute-consumer + readme_media live proofs; "
+            "use --receipt for fail-closed JSON receipt (stdout + .receipts/)",
+            file=sys.stderr,
+        )
+        print("unrecognized arguments: " + " ".join(argv), file=sys.stderr)
+        return 2
+
     # Default: live wrap of run.py for human COMPLETE_E2E output.
     # Theater-kill: NEVER attest behavior_proven without --receipt (rich execute path).
     # A file receipt may exist for diagnostics but behavior_proven stays false.
