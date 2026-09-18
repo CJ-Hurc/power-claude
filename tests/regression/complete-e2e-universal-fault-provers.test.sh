@@ -17,8 +17,13 @@ for f in "$INV" "$MISS"; do
     exit 1
   fi
 done
-# Must invoke a real product entrypoint.
+# Must invoke real product entrypoints (list-surfaces alone is incomplete theater:
+# operator CLIs historically ignored unknown argv and greenwashed PASS).
 grep -q 'list-surfaces.py' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must invoke list-surfaces.py" >&2; exit 1; }
+grep -q 'consumer.py' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must cover consumer.py" >&2; exit 1; }
+grep -q 'run.py' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must cover run.py" >&2; exit 1; }
+grep -q 'prove.py' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must cover prove.py" >&2; exit 1; }
+grep -q 'verify/run.py' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must cover verify/run.py" >&2; exit 1; }
 grep -q 'clean-room-replay.py' "$MISS" || { echo "FAIL universal-fault: missing-env.sh must invoke clean-room-replay.py" >&2; exit 1; }
 grep -q 'PC_SKIP_NPM' "$MISS" || { echo "FAIL universal-fault: missing-env.sh must force PC_SKIP_NPM=1" >&2; exit 1; }
 

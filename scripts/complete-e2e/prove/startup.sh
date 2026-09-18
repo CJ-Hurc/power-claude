@@ -46,15 +46,29 @@ for entry in scripts/bin/prove.sh scripts/bin/verify.sh scripts/bin/consumer.sh;
 done
 
 # Unknown option must fail-closed (never silently succeed into a full prove).
-set +e
-python3 "$ROOT/scripts/complete-e2e/list-surfaces.py" --hurc-ce2e-no-such-startup-flag \
-	>"$tmp/bad.out" 2>"$tmp/bad.err"
-rc=$?
-set -e
-[[ "$rc" -ne 0 ]] || fail "list-surfaces accepted unknown startup flag (rc=$rc)"
-text="$(cat "$tmp/bad.out" "$tmp/bad.err" 2>/dev/null || true)"
-printf '%s' "$text" | grep -qiE 'unrecognized arguments|unknown option|usage:' \
-	|| fail "unknown-option diagnostic missing from startup fail-closed output"
+# Cover inventory + the same operator bins startup claims are healthy.
+unknown_targets=(
+	"python3|$ROOT/scripts/complete-e2e/list-surfaces.py"
+	"bash|$ROOT/scripts/bin/prove.sh"
+	"bash|$ROOT/scripts/bin/verify.sh"
+	"bash|$ROOT/scripts/bin/consumer.sh"
+)
+for spec in "${unknown_targets[@]}"; do
+	runner="${spec%%|*}"
+	target="${spec#*|}"
+	set +e
+	"$runner" "$target" --hurc-ce2e-no-such-startup-flag \
+		>"$tmp/bad.out" 2>"$tmp/bad.err"
+	rc=$?
+	set -e
+	[[ "$rc" -ne 0 ]] || fail "$target accepted unknown startup flag (rc=$rc)"
+	text="$(cat "$tmp/bad.out" "$tmp/bad.err" 2>/dev/null || true)"
+	printf '%s' "$text" | grep -qiE 'unrecognized arguments|unknown option|usage:' \
+		|| fail "$target unknown-option diagnostic missing from startup fail-closed output"
+	if printf '%s' "$text" | grep -qiE 'COMPLETE_E2E: PASS|VERIFY: PASS|consumer complete-e2e'; then
+		fail "$target still ran live prove under unknown startup flag"
+	fi
+done
 
 echo "PASS startup process-starts-healthy offline entrypoints"
 exit 0

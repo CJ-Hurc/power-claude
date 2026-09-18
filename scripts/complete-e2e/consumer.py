@@ -1063,12 +1063,18 @@ def main():
 if __name__ == "__main__":
     # CE2E_HELP_FASTPATH: harness CLI probes must not run full consumer prove
     import sys as _sys
-    _a = set(_sys.argv[1:])
+    _argv = _sys.argv[1:]
+    _a = set(_argv)
     if _a & {"-h", "--help"}:
-        print("usage: scripts/complete-e2e/consumer.py [--help]\npower-claude-consumer: consumer prove/verify entry — use without flags to run live proofs")
+        print('usage: scripts/complete-e2e/consumer.py [--help]\npower-claude-consumer: consumer prove/verify entry — use without flags to run live proofs')
         raise SystemExit(0)
     if _a & {"-V", "--version"}:
-        print("power-claude-consumer 1.0.0")
+        print('power-claude-consumer 1.0.0')
         raise SystemExit(0)
+    # Fail-closed: unknown argv must not greenwash a live PASS (ignore-and-run theater).
+    if _argv:
+        print('usage: scripts/complete-e2e/consumer.py [--help]\npower-claude-consumer: consumer prove/verify entry — use without flags to run live proofs', file=_sys.stderr)
+        print("unrecognized arguments: " + " ".join(_argv), file=_sys.stderr)
+        raise SystemExit(2)
 
     raise SystemExit(main())
