@@ -9,6 +9,12 @@ HERE = Path(__file__).resolve().parent
 def main() -> int:
     print("power-claude complete-e2e")
     print("----------------------------------------")
+    # Skip-npm cannot greenwash COMPLETE_E2E: PASS (consumer package layer).
+    if os.environ.get("PC_SKIP_NPM") == "1":
+        print("  FAIL  PC_SKIP_NPM=1 refuses complete-e2e (not a live package gate)", flush=True)
+        print("----------------------------------------")
+        print("COMPLETE_E2E: FAIL")
+        return 1
     rc = 0
     media = HERE / "check_readme_media.py"
     r = subprocess.run([sys.executable, str(media)], cwd=str(ROOT))
@@ -19,8 +25,7 @@ def main() -> int:
         rc = 1
     consumer = HERE / "consumer.py"
     env = os.environ.copy()
-    if os.environ.get("PC_SKIP_NPM") == "1":
-        env["PC_SKIP_NPM"] = "1"
+    env.pop("PC_SKIP_NPM", None)
     r = subprocess.run([sys.executable, str(consumer)], cwd=str(ROOT), env=env)
     if r.returncode == 0:
         print("  PASS  consumer complete-e2e", flush=True)

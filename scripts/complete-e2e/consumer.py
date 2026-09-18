@@ -78,9 +78,10 @@ def main():
     else:
         fail_("README missing package install")
         rc = 1
+    # Skip-npm cannot greenwash a consumer prove (rc=0 while omitting live package gates).
     if os.environ.get("PC_SKIP_NPM") == "1":
-        print("  .     package layer skipped")
-        return rc
+        fail_("PC_SKIP_NPM=1 refuses consumer prove (not a live package gate)")
+        return 1
     tmp = tempfile.mkdtemp(prefix="pc-consumer-")
     try:
         pack_cmd = [pkg, "pack", "power-claude"]
