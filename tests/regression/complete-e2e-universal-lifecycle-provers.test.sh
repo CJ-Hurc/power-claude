@@ -23,6 +23,22 @@ done
 # Must invoke real product checks (not echo-only).
 grep -q 'compile\|bash -n' "$BUILD" || { echo "FAIL universal-lifecycle: build.sh must compile/bash -n" >&2; exit 1; }
 grep -q 'scripts/bin/prove.sh' "$START" || { echo "FAIL universal-lifecycle: startup.sh must exercise bin prove --help" >&2; exit 1; }
+grep -q 'scripts/complete-e2e/prove.sh' "$START" || { echo "FAIL universal-lifecycle: startup.sh must exercise complete-e2e prove wrapper --help" >&2; exit 1; }
+grep -q 'power-claude' "$START" || { echo "FAIL universal-lifecycle: startup.sh must require power-claude help identity" >&2; exit 1; }
+# Theater-kill: complete-e2e wrappers must not stub --help.
+for w in \
+  "$ROOT/scripts/complete-e2e/prove.sh" \
+  "$ROOT/scripts/complete-e2e/consumer.sh" \
+  "$ROOT/scripts/complete-e2e/run.sh" \
+  "$ROOT/scripts/complete-e2e/execute-consumer.sh" \
+  "$ROOT/scripts/complete-e2e/clean-room-replay.sh" \
+  "$ROOT/scripts/complete-e2e/check-adapter-paths.sh"
+do
+  if grep -qE 'echo ["'\'']Usage:.*\[options\]' "$w"; then
+    echo "FAIL universal-lifecycle: $(basename "$w") still stub --help short-circuit" >&2
+    exit 1
+  fi
+done
 grep -q 'check-ignore' "$CLEAN" || { echo "FAIL universal-lifecycle: cleanup.sh must check-ignore sinks" >&2; exit 1; }
 grep -q 'ce2e-cleanup-' "$CLEAN" || { echo "FAIL universal-lifecycle: cleanup.sh must create/remove probe marker" >&2; exit 1; }
 
