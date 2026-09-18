@@ -59,4 +59,20 @@ printf '%s' "$miss_text" | grep -q 'PASS missing-env' \
 printf '%s' "$inv_text$miss_text" | grep -qiE ': occupied' \
   && { echo "FAIL universal-fault: output still says occupied" >&2; exit 1; }
 
+
+# Theater-kill: invalid-config must refuse PC_SKIP_NPM=1 (no greenwash PASS).
+# missing-env intentionally forces PC_SKIP_NPM=1 to prove clean-room refuse — do not refuse outer skip there.
+grep -q 'PC_SKIP_NPM' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must refuse PC_SKIP_NPM" >&2; exit 1; }
+
+set +e
+PC_SKIP_NPM=1 bash "$INV" >"$tmp/skip-inv.out" 2>"$tmp/skip-inv.err"
+skip_inv_rc=$?
+set -e
+skip_inv_text="$(cat "$tmp/skip-inv.out" "$tmp/skip-inv.err" 2>/dev/null || true)"
+[[ "$skip_inv_rc" -ne 0 ]] || { echo "FAIL universal-fault: invalid-config.sh rc=0 under PC_SKIP_NPM"$'
+'"$skip_inv_text" >&2; exit 1; }
+printf '%s' "$skip_inv_text" | grep -qiE 'PC_SKIP_NPM|refuses'   || { echo "FAIL universal-fault: invalid-config skip refuse diagnostic missing"$'
+'"$skip_inv_text" >&2; exit 1; }
+printf '%s' "$skip_inv_text" | grep -q 'PASS invalid-config'   && { echo "FAIL universal-fault: invalid-config still PASS under PC_SKIP_NPM" >&2; exit 1; }
+
 echo "PASS complete-e2e-universal-fault-provers: invalid-config+missing-env real fail-closed (not occupied theater)"

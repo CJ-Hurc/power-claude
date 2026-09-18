@@ -6,7 +6,7 @@
 # Inputs   : cwd = repo root. Creates then removes a temp marker under tmp/.
 # Outputs  : PASS/FAIL on stdout.
 # Exit codes: 0 no leak / 1 leak or ignore gap / 2 usage
-# Side effects: brief tmp/ marker removed before exit; never touches product src.
+# Side effects: brief tmp/ marker removed before exit; never touches product src; no PC_SKIP_NPM greenwash.
 # -----------------------------------------------------------------------------
 set -uo pipefail
 
@@ -25,6 +25,11 @@ fi
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 cd "$ROOT" || exit 2
 fail() { echo "FAIL: $*" >&2; exit 1; }
+
+# Refuse skip-env theater: cleanup must not claim PASS under PC_SKIP_NPM.
+if [[ "${PC_SKIP_NPM:-}" == "1" ]]; then
+	fail "PC_SKIP_NPM=1 refuses cleanup prove (not a clean no-state-leak gate)"
+fi
 
 command -v git >/dev/null 2>&1 || fail "git not found"
 [[ -d "$ROOT/.git" ]] || fail "not a git checkout"

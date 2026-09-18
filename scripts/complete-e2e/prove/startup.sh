@@ -6,7 +6,7 @@
 # Inputs   : cwd = repo root. Exercises bin + complete-e2e wrapper --help + unknown-flag fail-closed.
 # Outputs  : PASS/FAIL on stdout.
 # Exit codes: 0 entrypoints healthy / 1 boot contract broken / 2 usage
-# Side effects: none (never runs full prove/consumer; help/fail paths only).
+# Side effects: none (never runs full prove/consumer; help/fail paths only; no PC_SKIP_NPM greenwash).
 # -----------------------------------------------------------------------------
 set -uo pipefail
 
@@ -25,6 +25,11 @@ fi
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 cd "$ROOT" || exit 2
 fail() { echo "FAIL: $*" >&2; exit 1; }
+
+# Refuse skip-env theater: startup must not claim PASS under PC_SKIP_NPM.
+if [[ "${PC_SKIP_NPM:-}" == "1" ]]; then
+	fail "PC_SKIP_NPM=1 refuses startup prove (not a clean process-starts-healthy gate)"
+fi
 
 need=(
 	scripts/bin/prove.sh
