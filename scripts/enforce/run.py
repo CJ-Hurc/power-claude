@@ -136,7 +136,8 @@ def main():
         info_("pre-tidy removed " + str(p.relative_to(ROOT)))
     tidy = ROOT / "scripts/tidy/run.sh"
     if tidy.is_file():
-        r = subprocess.run(["bash", str(tidy)], cwd=str(ROOT))
+        # Must pass --full: tidy refuses bare argv (no ignore-and-run theater).
+        r = subprocess.run(["bash", str(tidy), "--full"], cwd=str(ROOT))
         if r.returncode == 0: pass_("tidy --full")
         else: fail_("tidy --full"); rc = 1
     else: fail_("tidy missing"); rc = 1
@@ -144,4 +145,20 @@ def main():
     print("ENFORCE: PASS" if rc == 0 else "ENFORCE: FAIL")
     return rc
 if __name__ == "__main__":
+    # CE2E_HELP_FASTPATH: harness CLI probes must not run full enforce
+    _argv = sys.argv[1:]
+    _a = set(_argv)
+    if _a & {"-h", "--help"}:
+        print("usage: scripts/enforce/run.py [--fix] [--help]\npower-claude-enforce: floor gate — use --fix to chmod/purge; bare runs checks")
+        raise SystemExit(0)
+    if _a & {"-V", "--version"}:
+        print("power-claude-enforce 1.0.0")
+        raise SystemExit(0)
+    # Fail-closed: only --fix is a valid non-help flag (unknown must not greenwash).
+    allowed = {"--fix"}
+    unknown = [a for a in _argv if a not in allowed]
+    if unknown:
+        print("usage: scripts/enforce/run.py [--fix] [--help]\npower-claude-enforce: floor gate — use --fix to chmod/purge; bare runs checks", file=sys.stderr)
+        print("unrecognized arguments: " + " ".join(unknown), file=sys.stderr)
+        raise SystemExit(2)
     raise SystemExit(main())
