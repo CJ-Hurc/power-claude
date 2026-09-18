@@ -85,8 +85,8 @@ def main() -> int:
             # previously greenwashed PASS while JSON numeric CERTIFIED stayed invisible.
             allow_jn = '"ALLOW_UNPROVEN"' + ": 1"
             # JSON minified enables (configs/*.json): spaced ": true"/": 1" needles
-            # previously greenwashed PASS while JSON.stringify-style CERTIFIED:true/:1
-            # (no space after colon) stayed invisible.
+            # previously greenwashed PASS while JSON.stringify-style minified
+            # colon-true / colon-1 (no space after colon) stayed invisible.
             allow_jm = '"ALLOW_UNPROVEN"' + ":true"
             allow_jnm = '"ALLOW_UNPROVEN"' + ":1"
             # YAML unquoted-key enables (configs/*.yml|*.yaml): JSON-quoted
@@ -98,6 +98,11 @@ def main() -> int:
             # greenwashed PASS while unquoted-key numeric ": 1" forms stayed
             # invisible under .yml/.yaml already in the suffix set.
             allow_yn = "ALLOW_UNPROVEN" + ": 1"
+            # YAML unquoted-key minified boolean: spaced ": true" needles previously
+            # greenwashed PASS while flow-style unquoted-key minified colon-true
+            # (no space after colon) stayed invisible under .yml/.yaml already in the
+            # suffix set (JSON minified needles require quoted keys).
+            allow_ym = "ALLOW_UNPROVEN" + ":true"
             if (
                 allow_a in text
                 or allow_b in text
@@ -109,6 +114,7 @@ def main() -> int:
                 or allow_jnm in text
                 or allow_y in text
                 or allow_yn in text
+                or allow_ym in text
             ):
                 banned.append(rel + ": " + allow_a)
             cert_a = "CERTIFIED" + "=1"
@@ -135,6 +141,10 @@ def main() -> int:
             # YAML unquoted-key numeric: cert_y ": true" previously greenwashed
             # PASS while unquoted-key numeric ": 1" stayed invisible under .yml/.yaml.
             cert_yn = "certified" + ": 1"
+            # YAML unquoted-key minified boolean: cert_y ": true" previously
+            # greenwashed PASS while unquoted-key minified colon-true stayed invisible
+            # under .yml/.yaml (JSON cert_jml requires quoted-key minified form).
+            cert_ym = "certified" + ":true"
             if (
                 cert_a in text
                 or cert_as in text.lower()
@@ -150,6 +160,7 @@ def main() -> int:
                 or cert_jnml in text.lower()
                 or cert_y in text.lower()
                 or cert_yn in text.lower()
+                or cert_ym in text.lower()
             ):
                 banned.append(rel + ": fake CERTIFIED enable")
     if not banned:
