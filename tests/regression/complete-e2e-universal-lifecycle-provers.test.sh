@@ -23,6 +23,10 @@ done
 # Must invoke real product checks (not echo-only).
 grep -q 'compile\|bash -n' "$BUILD" || { echo "FAIL universal-lifecycle: build.sh must compile/bash -n" >&2; exit 1; }
 grep -q 'scripts/bin/prove.sh' "$START" || { echo "FAIL universal-lifecycle: startup.sh must exercise bin prove --help" >&2; exit 1; }
+grep -q 'scripts/bin/complete-e2e.sh' "$START" || { echo "FAIL universal-lifecycle: startup.sh must cover dual-origin bin complete-e2e" >&2; exit 1; }
+grep -q 'scripts/bin/execute-consumer.sh' "$START" || { echo "FAIL universal-lifecycle: startup.sh must cover dual-origin bin execute-consumer" >&2; exit 1; }
+grep -q 'scripts/bin/clean-room-replay.sh' "$START" || { echo "FAIL universal-lifecycle: startup.sh must cover dual-origin bin clean-room-replay" >&2; exit 1; }
+grep -q 'scripts/bin/check-adapter-paths.sh' "$START" || { echo "FAIL universal-lifecycle: startup.sh must cover dual-origin bin check-adapter-paths" >&2; exit 1; }
 grep -q 'scripts/complete-e2e/prove.sh' "$START" || { echo "FAIL universal-lifecycle: startup.sh must exercise complete-e2e prove wrapper --help" >&2; exit 1; }
 grep -q 'power-claude' "$START" || { echo "FAIL universal-lifecycle: startup.sh must require power-claude help identity" >&2; exit 1; }
 # Theater-kill: complete-e2e wrappers must not stub --help.
