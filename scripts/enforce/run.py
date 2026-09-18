@@ -52,7 +52,7 @@ def main():
     else:
         fail_("bytecode present"); rc = 1
     print("Layer 3 -- required prove entrypoints")
-    required = ["scripts/verify/run.sh", "scripts/verify/run.py", "scripts/complete-e2e/consumer.py", "scripts/complete-e2e/consumer.sh", "scripts/complete-e2e/check_readme_media.py", "scripts/complete-e2e/run.py", "scripts/complete-e2e/run.sh", "scripts/complete-e2e/prove.py", "scripts/complete-e2e/prove.sh", "scripts/complete-e2e/list-surfaces.py", "scripts/complete-e2e/execute-consumer.py", "scripts/complete-e2e/execute-consumer.sh", "configs/complete-e2e/runtime.json", "tests/regression/complete-e2e-prove-receipt.test.sh", "tests/regression/complete-e2e-list-surfaces-no-attest.test.sh", "tests/regression/complete-e2e-execute-receipt.test.sh", "scripts/complete-e2e/clean-room-replay.py", "scripts/complete-e2e/clean-room-replay.sh", "tests/regression/complete-e2e-clean-room-replay.test.sh", "scripts/complete-e2e/check-adapter-paths.py", "scripts/complete-e2e/check-adapter-paths.sh", "tests/regression/complete-e2e-adapter-paths.test.sh", "tests/regression/enforce-runs-fail-closed-regressions.test.sh", "tests/regression/complete-e2e-universal-fault-provers.test.sh", "scripts/complete-e2e/prove/invalid-config.sh", "scripts/complete-e2e/prove/missing-env.sh", "scripts/complete-e2e/prove/build.sh", "scripts/complete-e2e/prove/startup.sh", "scripts/complete-e2e/prove/cleanup.sh", "tests/regression/complete-e2e-universal-lifecycle-provers.test.sh", "scripts/tidy/run.sh", "scripts/tidy/run.py", "scripts/enforce/run.sh", "scripts/enforce/run.py", "scripts/release-ready/run.sh", "scripts/release-ready/run.py", "devtools/enforce/run.sh", "tests/regression/devtools-enforce-not-occupancy-stub.test.sh", "tests/regression/complete-e2e-consumer-refuse-skip-npm.test.sh", "tests/regression/complete-e2e-policy-scan-covers-typescript.test.sh", "tests/regression/complete-e2e-policy-scan-covers-devtools.test.sh", "tests/regression/complete-e2e-policy-scan-covers-configs-json.test.sh", "tests/regression/complete-e2e-layer1-covers-devtools-shell.test.sh", "tests/regression/complete-e2e-policy-scan-covers-media.test.sh", "tests/regression/complete-e2e-policy-scan-covers-svg.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-object-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-numeric-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-minified-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-shell-eq-true-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-shell-certified-eq-spaced-1.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-enables.test.sh"]
+    required = ["scripts/verify/run.sh", "scripts/verify/run.py", "scripts/complete-e2e/consumer.py", "scripts/complete-e2e/consumer.sh", "scripts/complete-e2e/check_readme_media.py", "scripts/complete-e2e/run.py", "scripts/complete-e2e/run.sh", "scripts/complete-e2e/prove.py", "scripts/complete-e2e/prove.sh", "scripts/complete-e2e/list-surfaces.py", "scripts/complete-e2e/execute-consumer.py", "scripts/complete-e2e/execute-consumer.sh", "configs/complete-e2e/runtime.json", "tests/regression/complete-e2e-prove-receipt.test.sh", "tests/regression/complete-e2e-list-surfaces-no-attest.test.sh", "tests/regression/complete-e2e-execute-receipt.test.sh", "scripts/complete-e2e/clean-room-replay.py", "scripts/complete-e2e/clean-room-replay.sh", "tests/regression/complete-e2e-clean-room-replay.test.sh", "scripts/complete-e2e/check-adapter-paths.py", "scripts/complete-e2e/check-adapter-paths.sh", "tests/regression/complete-e2e-adapter-paths.test.sh", "tests/regression/enforce-runs-fail-closed-regressions.test.sh", "tests/regression/complete-e2e-universal-fault-provers.test.sh", "scripts/complete-e2e/prove/invalid-config.sh", "scripts/complete-e2e/prove/missing-env.sh", "scripts/complete-e2e/prove/build.sh", "scripts/complete-e2e/prove/startup.sh", "scripts/complete-e2e/prove/cleanup.sh", "tests/regression/complete-e2e-universal-lifecycle-provers.test.sh", "scripts/tidy/run.sh", "scripts/tidy/run.py", "scripts/enforce/run.sh", "scripts/enforce/run.py", "scripts/release-ready/run.sh", "scripts/release-ready/run.py", "devtools/enforce/run.sh", "tests/regression/devtools-enforce-not-occupancy-stub.test.sh", "tests/regression/complete-e2e-consumer-refuse-skip-npm.test.sh", "tests/regression/complete-e2e-policy-scan-covers-typescript.test.sh", "tests/regression/complete-e2e-policy-scan-covers-devtools.test.sh", "tests/regression/complete-e2e-policy-scan-covers-configs-json.test.sh", "tests/regression/complete-e2e-layer1-covers-devtools-shell.test.sh", "tests/regression/complete-e2e-policy-scan-covers-media.test.sh", "tests/regression/complete-e2e-policy-scan-covers-svg.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-object-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-numeric-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-minified-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-shell-eq-true-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-shell-certified-eq-spaced-1.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-numeric-enables.test.sh"]
     for rel in required:
         if (ROOT / rel).is_file(): pass_("present " + rel)
         else: fail_("missing " + rel); rc = 1
@@ -82,6 +82,7 @@ def main():
         "tests/regression/complete-e2e-policy-scan-covers-shell-eq-true-enables.test.sh",
         "tests/regression/complete-e2e-policy-scan-covers-shell-certified-eq-spaced-1.test.sh",
         "tests/regression/complete-e2e-policy-scan-covers-yaml-enables.test.sh",
+        "tests/regression/complete-e2e-policy-scan-covers-yaml-numeric-enables.test.sh",
     ]
     for rel in live_regressions:
         script = ROOT / rel
@@ -172,6 +173,10 @@ def main():
             # boolean ": true" forms stayed invisible even though .yml/.yaml
             # are already in the suffix set.
             allow_y = "ALLOW_UNPROVEN" + ": true"
+            # YAML unquoted-key numeric: boolean ": true" needles previously
+            # greenwashed PASS while unquoted-key numeric ": 1" forms stayed
+            # invisible under .yml/.yaml already in the suffix set.
+            allow_yn = "ALLOW_UNPROVEN" + ": 1"
             if (
                 allow_a in text
                 or allow_b in text
@@ -182,6 +187,7 @@ def main():
                 or allow_jm in text
                 or allow_jnm in text
                 or allow_y in text
+                or allow_yn in text
             ):
                 banned.append(rel + ": " + allow_a)
             cert_a = "CERTIFIED" + "=1"
@@ -205,6 +211,9 @@ def main():
             # greenwashed PASS while unquoted-key ": true" stayed invisible
             # under .yml/.yaml already listed in the suffix set.
             cert_y = "certified" + ": true"
+            # YAML unquoted-key numeric: cert_y ": true" previously greenwashed
+            # PASS while unquoted-key numeric ": 1" stayed invisible under .yml/.yaml.
+            cert_yn = "certified" + ": 1"
             if (
                 cert_a in text
                 or cert_as in text.lower()
@@ -219,6 +228,7 @@ def main():
                 or cert_jnm in text
                 or cert_jnml in text.lower()
                 or cert_y in text.lower()
+                or cert_yn in text.lower()
             ):
                 banned.append(rel + ": fake CERTIFIED enable")
     if not banned:

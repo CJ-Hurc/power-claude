@@ -94,6 +94,10 @@ def main() -> int:
             # boolean ": true" forms stayed invisible even though .yml/.yaml
             # are already in the suffix set.
             allow_y = "ALLOW_UNPROVEN" + ": true"
+            # YAML unquoted-key numeric: boolean ": true" needles previously
+            # greenwashed PASS while unquoted-key numeric ": 1" forms stayed
+            # invisible under .yml/.yaml already in the suffix set.
+            allow_yn = "ALLOW_UNPROVEN" + ": 1"
             if (
                 allow_a in text
                 or allow_b in text
@@ -104,6 +108,7 @@ def main() -> int:
                 or allow_jm in text
                 or allow_jnm in text
                 or allow_y in text
+                or allow_yn in text
             ):
                 banned.append(rel + ": " + allow_a)
             cert_a = "CERTIFIED" + "=1"
@@ -127,6 +132,9 @@ def main() -> int:
             # greenwashed PASS while unquoted-key ": true" stayed invisible
             # under .yml/.yaml already listed in the suffix set.
             cert_y = "certified" + ": true"
+            # YAML unquoted-key numeric: cert_y ": true" previously greenwashed
+            # PASS while unquoted-key numeric ": 1" stayed invisible under .yml/.yaml.
+            cert_yn = "certified" + ": 1"
             if (
                 cert_a in text
                 or cert_as in text.lower()
@@ -141,6 +149,7 @@ def main() -> int:
                 or cert_jnm in text
                 or cert_jnml in text.lower()
                 or cert_y in text.lower()
+                or cert_yn in text.lower()
             ):
                 banned.append(rel + ": fake CERTIFIED enable")
     if not banned:
