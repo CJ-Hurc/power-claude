@@ -22,7 +22,12 @@ def main():
     print("Layer 2 -- scripts compile + shebang")
     scripts_root = ROOT / "scripts"
     py_files = sorted(scripts_root.rglob("*.py")) if scripts_root.is_dir() else []
-    sh_files = sorted(scripts_root.rglob("*.sh")) if scripts_root.is_dir() else []
+    # Include devtools/**/*.sh: required dual-origin CLI shebang must not be a
+    # scripts-only blind spot (peer to enforce Layer 1 sh_roots).
+    sh_files = []
+    for sh_root in (scripts_root, ROOT / "devtools"):
+        if sh_root.is_dir():
+            sh_files.extend(sorted(sh_root.rglob("*.sh")))
     for py in py_files:
         if "__pycache__" in py.parts: continue
         try:
