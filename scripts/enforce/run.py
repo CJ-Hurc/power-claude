@@ -52,7 +52,7 @@ def main():
     else:
         fail_("bytecode present"); rc = 1
     print("Layer 3 -- required prove entrypoints")
-    required = ["scripts/verify/run.sh", "scripts/verify/run.py", "scripts/complete-e2e/consumer.py", "scripts/complete-e2e/consumer.sh", "scripts/complete-e2e/check_readme_media.py", "scripts/complete-e2e/run.py", "scripts/complete-e2e/run.sh", "scripts/complete-e2e/prove.py", "scripts/complete-e2e/prove.sh", "scripts/complete-e2e/list-surfaces.py", "scripts/complete-e2e/execute-consumer.py", "scripts/complete-e2e/execute-consumer.sh", "configs/complete-e2e/runtime.json", "tests/regression/complete-e2e-prove-receipt.test.sh", "tests/regression/complete-e2e-list-surfaces-no-attest.test.sh", "tests/regression/complete-e2e-execute-receipt.test.sh", "scripts/complete-e2e/clean-room-replay.py", "scripts/complete-e2e/clean-room-replay.sh", "tests/regression/complete-e2e-clean-room-replay.test.sh", "scripts/complete-e2e/check-adapter-paths.py", "scripts/complete-e2e/check-adapter-paths.sh", "tests/regression/complete-e2e-adapter-paths.test.sh", "tests/regression/enforce-runs-fail-closed-regressions.test.sh", "tests/regression/complete-e2e-universal-fault-provers.test.sh", "scripts/complete-e2e/prove/invalid-config.sh", "scripts/complete-e2e/prove/missing-env.sh", "scripts/complete-e2e/prove/build.sh", "scripts/complete-e2e/prove/startup.sh", "scripts/complete-e2e/prove/cleanup.sh", "tests/regression/complete-e2e-universal-lifecycle-provers.test.sh", "scripts/tidy/run.sh", "scripts/tidy/run.py", "scripts/enforce/run.sh", "scripts/enforce/run.py", "scripts/release-ready/run.sh", "scripts/release-ready/run.py", "devtools/enforce/run.sh", "tests/regression/devtools-enforce-not-occupancy-stub.test.sh", "tests/regression/complete-e2e-consumer-refuse-skip-npm.test.sh", "tests/regression/complete-e2e-policy-scan-covers-typescript.test.sh", "tests/regression/complete-e2e-policy-scan-covers-devtools.test.sh", "tests/regression/complete-e2e-policy-scan-covers-configs-json.test.sh", "tests/regression/complete-e2e-layer1-covers-devtools-shell.test.sh", "tests/regression/complete-e2e-policy-scan-covers-media.test.sh", "tests/regression/complete-e2e-policy-scan-covers-svg.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-object-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-numeric-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-minified-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-shell-eq-true-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-shell-certified-eq-spaced-1.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-numeric-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-minified-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-minified-numeric-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-docs.test.sh", "tests/regression/complete-e2e-policy-scan-covers-root-md.test.sh"]
+    required = ["scripts/verify/run.sh", "scripts/verify/run.py", "scripts/complete-e2e/consumer.py", "scripts/complete-e2e/consumer.sh", "scripts/complete-e2e/check_readme_media.py", "scripts/complete-e2e/run.py", "scripts/complete-e2e/run.sh", "scripts/complete-e2e/prove.py", "scripts/complete-e2e/prove.sh", "scripts/complete-e2e/list-surfaces.py", "scripts/complete-e2e/execute-consumer.py", "scripts/complete-e2e/execute-consumer.sh", "configs/complete-e2e/runtime.json", "tests/regression/complete-e2e-prove-receipt.test.sh", "tests/regression/complete-e2e-list-surfaces-no-attest.test.sh", "tests/regression/complete-e2e-execute-receipt.test.sh", "scripts/complete-e2e/clean-room-replay.py", "scripts/complete-e2e/clean-room-replay.sh", "tests/regression/complete-e2e-clean-room-replay.test.sh", "scripts/complete-e2e/check-adapter-paths.py", "scripts/complete-e2e/check-adapter-paths.sh", "tests/regression/complete-e2e-adapter-paths.test.sh", "tests/regression/enforce-runs-fail-closed-regressions.test.sh", "tests/regression/complete-e2e-universal-fault-provers.test.sh", "scripts/complete-e2e/prove/invalid-config.sh", "scripts/complete-e2e/prove/missing-env.sh", "scripts/complete-e2e/prove/build.sh", "scripts/complete-e2e/prove/startup.sh", "scripts/complete-e2e/prove/cleanup.sh", "tests/regression/complete-e2e-universal-lifecycle-provers.test.sh", "scripts/tidy/run.sh", "scripts/tidy/run.py", "scripts/enforce/run.sh", "scripts/enforce/run.py", "scripts/release-ready/run.sh", "scripts/release-ready/run.py", "devtools/enforce/run.sh", "tests/regression/devtools-enforce-not-occupancy-stub.test.sh", "tests/regression/complete-e2e-consumer-refuse-skip-npm.test.sh", "tests/regression/complete-e2e-policy-scan-covers-typescript.test.sh", "tests/regression/complete-e2e-policy-scan-covers-devtools.test.sh", "tests/regression/complete-e2e-policy-scan-covers-configs-json.test.sh", "tests/regression/complete-e2e-layer1-covers-devtools-shell.test.sh", "tests/regression/complete-e2e-policy-scan-covers-media.test.sh", "tests/regression/complete-e2e-policy-scan-covers-svg.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-object-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-numeric-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-minified-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-shell-eq-true-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-shell-certified-eq-spaced-1.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-numeric-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-minified-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-minified-numeric-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-docs.test.sh", "tests/regression/complete-e2e-policy-scan-covers-root-md.test.sh", "tests/regression/complete-e2e-policy-scan-covers-root-license.test.sh"]
     for rel in required:
         if (ROOT / rel).is_file(): pass_("present " + rel)
         else: fail_("missing " + rel); rc = 1
@@ -87,6 +87,7 @@ def main():
         "tests/regression/complete-e2e-policy-scan-covers-yaml-minified-numeric-enables.test.sh",
         "tests/regression/complete-e2e-policy-scan-covers-docs.test.sh",
         "tests/regression/complete-e2e-policy-scan-covers-root-md.test.sh",
+        "tests/regression/complete-e2e-policy-scan-covers-root-license.test.sh",
     ]
     for rel in live_regressions:
         script = ROOT / rel
@@ -151,6 +152,10 @@ def main():
     # policy_roots omitted the repo root — a fake CERTIFIED enable in README.md
     # greenwashed policy PASS while scripts+devtools+configs+media+docs stayed "clean".
     # Scan ROOT.iterdir() files only (not rglob) so tests/ plant needles stay out of scope.
+    # LICENSE is extensionless (suffix "") and required by verify Layer 1 — suffix-set
+    # membership alone previously greenwashed PASS while a fake CERTIFIED enable in
+    # LICENSE stayed invisible; empty-suffix root files must be included (unknown
+    # non-empty suffixes not).
     policy_roots = [scripts_root, ROOT / "devtools", ROOT / "configs", ROOT / "media", ROOT / "docs"]
     policy_paths = []
     for policy_root in policy_roots:
@@ -165,7 +170,12 @@ def main():
     for path in sorted(ROOT.iterdir()):
         if not path.is_file():
             continue
-        if path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts", ".json", ".js", ".html", ".svg"}:
+        # Extensionless root files (LICENSE): verify Layer 1 requires LICENSE as a
+        # product surface; suffix-set-only ROOT.iterdir() previously greenwashed
+        # policy PASS while a fake CERTIFIED enable in LICENSE stayed invisible
+        # (README/CHANGELOG already covered via .md). Empty suffix must be scanned;
+        # unknown non-empty suffixes stay excluded.
+        if path.suffix and path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts", ".json", ".js", ".html", ".svg"}:
             continue
         policy_paths.append(path)
     for path in policy_paths:
