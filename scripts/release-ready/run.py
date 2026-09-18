@@ -56,7 +56,7 @@ def main() -> int:
     for path in sorted((ROOT / "scripts").rglob("*")):
         if ".git" in path.parts or not path.is_file():
             continue
-        if path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml"}:
+        if path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts"}:
             continue
         text = path.read_text(encoding="utf-8", errors="replace")
         rel = str(path.relative_to(ROOT))
