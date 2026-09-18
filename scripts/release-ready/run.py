@@ -66,6 +66,10 @@ def main() -> int:
     # policy_roots omitted the repo root — a fake CERTIFIED enable in README.md
     # greenwashed policy PASS while scripts+devtools+configs+media+docs stayed "clean".
     # Scan ROOT.iterdir() files only (not rglob) so tests/ plant needles stay out of scope.
+    # LICENSE is extensionless (suffix "") and required by verify Layer 1 — suffix-set
+    # membership alone previously greenwashed PASS while a fake CERTIFIED enable in
+    # LICENSE stayed invisible; empty-suffix root files must be included (unknown
+    # non-empty suffixes not).
     policy_roots = [ROOT / "scripts", ROOT / "devtools", ROOT / "configs", ROOT / "media", ROOT / "docs"]
     policy_paths = []
     for policy_root in policy_roots:
@@ -80,7 +84,12 @@ def main() -> int:
     for path in sorted(ROOT.iterdir()):
         if not path.is_file():
             continue
-        if path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts", ".json", ".js", ".html", ".svg"}:
+        # Extensionless root files (LICENSE): verify Layer 1 requires LICENSE as a
+        # product surface; suffix-set-only ROOT.iterdir() previously greenwashed
+        # policy PASS while a fake CERTIFIED enable in LICENSE stayed invisible
+        # (README/CHANGELOG already covered via .md). Empty suffix must be scanned;
+        # unknown non-empty suffixes stay excluded.
+        if path.suffix and path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts", ".json", ".js", ".html", ".svg"}:
             continue
         policy_paths.append(path)
     for path in policy_paths:
