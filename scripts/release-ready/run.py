@@ -80,7 +80,19 @@ def main() -> int:
             # JSON numeric enables (configs/*.json): boolean ": true" needles
             # previously greenwashed PASS while JSON numeric CERTIFIED stayed invisible.
             allow_jn = '"ALLOW_UNPROVEN"' + ": 1"
-            if allow_a in text or allow_b in text or allow_j in text or allow_jn in text:
+            # JSON minified enables (configs/*.json): spaced ": true"/": 1" needles
+            # previously greenwashed PASS while JSON.stringify-style CERTIFIED:true/:1
+            # (no space after colon) stayed invisible.
+            allow_jm = '"ALLOW_UNPROVEN"' + ":true"
+            allow_jnm = '"ALLOW_UNPROVEN"' + ":1"
+            if (
+                allow_a in text
+                or allow_b in text
+                or allow_j in text
+                or allow_jn in text
+                or allow_jm in text
+                or allow_jnm in text
+            ):
                 banned.append(rel + ": " + allow_a)
             cert_a = "CERTIFIED" + "=1"
             cert_b = "certified" + " = true"
@@ -88,6 +100,10 @@ def main() -> int:
             cert_jl = '"certified"' + ": true"
             cert_jn = '"CERTIFIED"' + ": 1"
             cert_jnl = '"certified"' + ": 1"
+            cert_jm = '"CERTIFIED"' + ":true"
+            cert_jml = '"certified"' + ":true"
+            cert_jnm = '"CERTIFIED"' + ":1"
+            cert_jnml = '"certified"' + ":1"
             if (
                 cert_a in text
                 or cert_b in text.lower()
@@ -95,6 +111,10 @@ def main() -> int:
                 or cert_jl in text.lower()
                 or cert_jn in text
                 or cert_jnl in text.lower()
+                or cert_jm in text
+                or cert_jml in text.lower()
+                or cert_jnm in text
+                or cert_jnml in text.lower()
             ):
                 banned.append(rel + ": fake CERTIFIED enable")
     if not banned:
