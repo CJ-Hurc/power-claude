@@ -53,17 +53,18 @@ def main() -> int:
     ok = True
     print("Gate -- policy scan (no ALLOW_UNPROVEN / fake CERTIFIED)")
     banned = []
-    # Scan scripts/ and devtools/: required dual-origin enforce CLI lives under
-    # devtools/enforce/run.sh — scripts-only scan previously greenwashed PASS
+    # Scan scripts/, devtools/, and configs/: required runtime.json lives under
+    # configs/complete-e2e/ — scripts+devtools-only scan previously greenwashed PASS
     # while a fake CERTIFIED enable in that required proof input stayed invisible.
-    policy_roots = [ROOT / "scripts", ROOT / "devtools"]
+    # .json must be in the suffix set or configs/*.json stays a blind spot.
+    policy_roots = [ROOT / "scripts", ROOT / "devtools", ROOT / "configs"]
     for policy_root in policy_roots:
         if not policy_root.is_dir():
             continue
         for path in sorted(policy_root.rglob("*")):
             if ".git" in path.parts or not path.is_file():
                 continue
-            if path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts"}:
+            if path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts", ".json"}:
                 continue
             text = path.read_text(encoding="utf-8", errors="replace")
             rel = str(path.relative_to(ROOT))
@@ -78,7 +79,7 @@ def main() -> int:
             if cert_a in text or cert_b in text.lower():
                 banned.append(rel + ": fake CERTIFIED enable")
     if not banned:
-        pass_("no ALLOW_UNPROVEN/fake CERTIFIED enables in scripts+devtools")
+        pass_("no ALLOW_UNPROVEN/fake CERTIFIED enables in scripts+devtools+configs")
     else:
         fail_("policy violations: " + "; ".join(banned[:5]))
         ok = False
