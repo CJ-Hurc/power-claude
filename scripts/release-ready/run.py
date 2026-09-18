@@ -101,6 +101,10 @@ def main() -> int:
             ):
                 banned.append(rel + ": " + allow_a)
             cert_a = "CERTIFIED" + "=1"
+            # Shell spaced numeric enable: ALLOW_UNPROVEN already has allow_b
+            # (" = 1"); CERTIFIED + "=1"-only previously greenwashed PASS while the
+            # spaced numeric form stayed invisible in scripts/*.sh.
+            cert_as = "certified" + " = 1"
             cert_b = "certified" + " = true"
             # Shell env =true (no spaces): spaced certified + " = true" previously
             # greenwashed PASS while no-space =true stayed invisible in scripts/*.sh.
@@ -115,6 +119,7 @@ def main() -> int:
             cert_jnml = '"certified"' + ":1"
             if (
                 cert_a in text
+                or cert_as in text.lower()
                 or cert_b in text.lower()
                 or cert_t in text.lower()
                 or cert_j in text
