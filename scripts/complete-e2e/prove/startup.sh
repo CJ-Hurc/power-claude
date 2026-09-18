@@ -3,7 +3,7 @@
 # Goal     : product CLI entrypoints start healthy offline (no live prove).
 # Purpose  : Product prover for complete-e2e universal startup (process-starts-healthy).
 # Consumers: complete-e2e occupancy; exec _exec_product_universal_lifecycle; humans.
-# Inputs   : cwd = repo root. Exercises bin + complete-e2e wrapper --help + unknown-flag fail-closed.
+# Inputs   : cwd = repo root. Exercises all dual-origin scripts/bin + complete-e2e wrapper --help + unknown-flag fail-closed.
 # Outputs  : PASS/FAIL on stdout.
 # Exit codes: 0 entrypoints healthy / 1 boot contract broken / 2 usage
 # Side effects: none (never runs full prove/consumer; help/fail paths only; no PC_SKIP_NPM greenwash).
@@ -32,9 +32,15 @@ if [[ "${PC_SKIP_NPM:-}" == "1" ]]; then
 fi
 
 need=(
+	# Dual-origin scripts/bin/*.sh (list-surfaces inventory) — missing bins
+	# previously greenwashed PASS startup while inventory silently shrank.
 	scripts/bin/prove.sh
 	scripts/bin/verify.sh
 	scripts/bin/consumer.sh
+	scripts/bin/complete-e2e.sh
+	scripts/bin/execute-consumer.sh
+	scripts/bin/clean-room-replay.sh
+	scripts/bin/check-adapter-paths.sh
 	scripts/complete-e2e/list-surfaces.py
 	scripts/complete-e2e/prove.sh
 	scripts/complete-e2e/consumer.sh
@@ -71,6 +77,10 @@ help_entries=(
 	scripts/bin/prove.sh
 	scripts/bin/verify.sh
 	scripts/bin/consumer.sh
+	scripts/bin/complete-e2e.sh
+	scripts/bin/execute-consumer.sh
+	scripts/bin/clean-room-replay.sh
+	scripts/bin/check-adapter-paths.sh
 	scripts/complete-e2e/prove.sh
 	scripts/complete-e2e/consumer.sh
 	scripts/complete-e2e/run.sh
@@ -98,6 +108,10 @@ unknown_targets=(
 	"bash|$ROOT/scripts/bin/prove.sh"
 	"bash|$ROOT/scripts/bin/verify.sh"
 	"bash|$ROOT/scripts/bin/consumer.sh"
+	"bash|$ROOT/scripts/bin/complete-e2e.sh"
+	"bash|$ROOT/scripts/bin/execute-consumer.sh"
+	"bash|$ROOT/scripts/bin/clean-room-replay.sh"
+	"bash|$ROOT/scripts/bin/check-adapter-paths.sh"
 	"bash|$ROOT/scripts/complete-e2e/prove.sh"
 	"bash|$ROOT/scripts/complete-e2e/consumer.sh"
 	"bash|$ROOT/scripts/complete-e2e/run.sh"
