@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # -----------------------------------------------------------------------------
-# Goal     : operator CLIs reject reserved --hurc-ce2e-* unknown options.
+# Goal     : operator+readme-media CLIs reject reserved --hurc-ce2e-* unknown options.
 # Purpose  : Product prover for complete-e2e universal invalid-config fault.
 # Consumers: complete-e2e occupancy; exec _exec_product_universal_fault; humans.
 # Inputs   : cwd = repo root.
@@ -28,6 +28,7 @@ command -v python3 >/dev/null 2>&1 || fail "python3 missing"
 [[ -f "$ROOT/scripts/tidy/run.py" ]] || fail "tidy/run.py missing"
 [[ -f "$ROOT/scripts/enforce/run.py" ]] || fail "enforce/run.py missing"
 [[ -f "$ROOT/scripts/release-ready/run.py" ]] || fail "release-ready/run.py missing"
+[[ -f "$ROOT/scripts/complete-e2e/check_readme_media.py" ]] || fail "check_readme_media.py missing"
 
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
@@ -43,6 +44,7 @@ targets=(
 	"scripts/tidy/run.py"
 	"scripts/enforce/run.py"
 	"scripts/release-ready/run.py"
+	"scripts/complete-e2e/check_readme_media.py"
 )
 
 for rel in "${targets[@]}"; do
@@ -56,10 +58,10 @@ for rel in "${targets[@]}"; do
 	printf '%s' "$text" | grep -qiE 'unrecognized arguments|unknown option|usage:' \
 		|| fail "$rel unknown-option diagnostic missing from fail-closed output"
 	# Theater-kill: must not start a live consumer/complete-e2e/floor run under bad argv.
-	if printf '%s' "$text" | grep -qiE 'COMPLETE_E2E: PASS|VERIFY: PASS|consumer complete-e2e|TIDY: PASS|ENFORCE: PASS|RELEASE_READY: PASS'; then
+	if printf '%s' "$text" | grep -qiE 'COMPLETE_E2E: PASS|VERIFY: PASS|consumer complete-e2e|TIDY: PASS|ENFORCE: PASS|RELEASE_READY: PASS|^checked='; then
 		fail "$rel still ran live prove under unknown flag"
 	fi
 done
 
-echo "PASS invalid-config reserved --hurc-ce2e-* fail-closed on list-surfaces+operator+floor CLIs"
+echo "PASS invalid-config reserved --hurc-ce2e-* fail-closed on list-surfaces+operator+floor+readme-media CLIs"
 exit 0
