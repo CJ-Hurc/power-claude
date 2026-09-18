@@ -8,7 +8,7 @@ Paths use scripts/bin/*.sh so declarative + runtime share one path identity
 (avoids reconciliation collisions with dual bin/ trees).
 """
 from __future__ import annotations
-import argparse, json, sys
+import json, sys
 from pathlib import Path
 
 CANDIDATES = (
@@ -21,6 +21,12 @@ CANDIDATES = (
     ("cli:check-adapter-paths", "scripts/bin/check-adapter-paths.sh"),
 )
 
+HELP = (
+    "usage: scripts/complete-e2e/list-surfaces.py [--help] [--project-dir PATH]\n"
+    "power-claude-list-surfaces: inventory-only surface listing "
+    "(behavior_proven always false) — optional --project-dir PATH"
+)
+
 
 def _surfaces(root: Path):
     out = []
@@ -30,11 +36,33 @@ def _surfaces(root: Path):
     return out
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser(description="usage: list-surfaces.py [--project-dir PATH]")
-    ap.add_argument("--project-dir", default="")
-    args = ap.parse_args()
-    root = Path(args.project_dir).resolve() if args.project_dir else Path(__file__).resolve().parents[2]
+def main(argv: list[str] | None = None) -> int:
+    argv = list(sys.argv[1:] if argv is None else argv)
+    a = set(argv)
+    # CE2E_HELP_FASTPATH: harness CLI probes must not run inventory mutation.
+    if a & {"-h", "--help"}:
+        print(HELP)
+        return 0
+    if a & {"-V", "--version"}:
+        print("power-claude-list-surfaces 1.0.0")
+        return 0
+
+    project_dir = ""
+    args = list(argv)
+    if "--project-dir" in args:
+        i = args.index("--project-dir")
+        if i + 1 >= len(args):
+            print("list-surfaces: --project-dir requires a path", file=sys.stderr)
+            return 2
+        project_dir = args[i + 1]
+        del args[i : i + 2]
+    # Fail-closed: unknown argv must not greenwash inventory JSON (ignore-and-run theater).
+    if args:
+        print(HELP, file=sys.stderr)
+        print("unrecognized arguments: " + " ".join(args), file=sys.stderr)
+        return 2
+
+    root = Path(project_dir).resolve() if project_dir else Path(__file__).resolve().parents[2]
     if not root.is_dir():
         print("list-surfaces: project-dir not a directory", file=sys.stderr)
         return 2

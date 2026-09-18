@@ -3,7 +3,7 @@
 # Goal     : product CLI entrypoints start healthy offline (no live prove).
 # Purpose  : Product prover for complete-e2e universal startup (process-starts-healthy).
 # Consumers: complete-e2e occupancy; exec _exec_product_universal_lifecycle; humans.
-# Inputs   : cwd = repo root. Exercises all dual-origin scripts/bin + complete-e2e wrapper --help + unknown-flag fail-closed.
+# Inputs   : cwd = repo root. Exercises all dual-origin scripts/bin + complete-e2e wrapper + list-surfaces --help (power-claude identity) + unknown-flag fail-closed.
 # Outputs  : PASS/FAIL on stdout.
 # Exit codes: 0 entrypoints healthy / 1 boot contract broken / 2 usage
 # Side effects: none (never runs full prove/consumer; help/fail paths only; no PC_SKIP_NPM greenwash).
@@ -71,34 +71,38 @@ done
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 
-# Operator entrypoints must answer --help (exit 0 + usage/identity text).
+# Operator + inventory entrypoints must answer --help (exit 0 + usage/identity text).
 # Require power-claude identity so stub "Usage: name [options]" cannot greenwash.
+# list-surfaces.py previously used bare argparse help (usage only, no power-claude).
 help_entries=(
-	scripts/bin/prove.sh
-	scripts/bin/verify.sh
-	scripts/bin/consumer.sh
-	scripts/bin/complete-e2e.sh
-	scripts/bin/execute-consumer.sh
-	scripts/bin/clean-room-replay.sh
-	scripts/bin/check-adapter-paths.sh
-	scripts/complete-e2e/prove.sh
-	scripts/complete-e2e/consumer.sh
-	scripts/complete-e2e/run.sh
-	scripts/complete-e2e/execute-consumer.sh
-	scripts/complete-e2e/clean-room-replay.sh
-	scripts/complete-e2e/check-adapter-paths.sh
+	"bash|$ROOT/scripts/bin/prove.sh"
+	"bash|$ROOT/scripts/bin/verify.sh"
+	"bash|$ROOT/scripts/bin/consumer.sh"
+	"bash|$ROOT/scripts/bin/complete-e2e.sh"
+	"bash|$ROOT/scripts/bin/execute-consumer.sh"
+	"bash|$ROOT/scripts/bin/clean-room-replay.sh"
+	"bash|$ROOT/scripts/bin/check-adapter-paths.sh"
+	"bash|$ROOT/scripts/complete-e2e/prove.sh"
+	"bash|$ROOT/scripts/complete-e2e/consumer.sh"
+	"bash|$ROOT/scripts/complete-e2e/run.sh"
+	"bash|$ROOT/scripts/complete-e2e/execute-consumer.sh"
+	"bash|$ROOT/scripts/complete-e2e/clean-room-replay.sh"
+	"bash|$ROOT/scripts/complete-e2e/check-adapter-paths.sh"
+	"python3|$ROOT/scripts/complete-e2e/list-surfaces.py"
 )
-for entry in "${help_entries[@]}"; do
+for spec in "${help_entries[@]}"; do
+	runner="${spec%%|*}"
+	target="${spec#*|}"
 	set +e
-	bash "$ROOT/$entry" --help >"$tmp/help.out" 2>"$tmp/help.err"
+	"$runner" "$target" --help >"$tmp/help.out" 2>"$tmp/help.err"
 	rc=$?
 	set -e
-	[[ "$rc" -eq 0 ]] || fail "$entry --help exited $rc"
+	[[ "$rc" -eq 0 ]] || fail "$target --help exited $rc"
 	text="$(cat "$tmp/help.out" "$tmp/help.err" 2>/dev/null || true)"
 	printf '%s' "$text" | grep -qiE 'usage:' \
-		|| fail "$entry --help missing usage diagnostic"
+		|| fail "$target --help missing usage diagnostic"
 	printf '%s' "$text" | grep -qiE 'power-claude' \
-		|| fail "$entry --help missing power-claude identity (stub help theater)"
+		|| fail "$target --help missing power-claude identity (stub help theater)"
 done
 
 # Unknown option must fail-closed (never silently succeed into a full prove).
