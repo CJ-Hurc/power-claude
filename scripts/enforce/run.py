@@ -52,7 +52,7 @@ def main():
     else:
         fail_("bytecode present"); rc = 1
     print("Layer 3 -- required prove entrypoints")
-    required = ["scripts/verify/run.sh", "scripts/verify/run.py", "scripts/complete-e2e/consumer.py", "scripts/complete-e2e/consumer.sh", "scripts/complete-e2e/check_readme_media.py", "scripts/complete-e2e/run.py", "scripts/complete-e2e/run.sh", "scripts/complete-e2e/prove.py", "scripts/complete-e2e/prove.sh", "scripts/complete-e2e/list-surfaces.py", "scripts/complete-e2e/execute-consumer.py", "scripts/complete-e2e/execute-consumer.sh", "configs/complete-e2e/runtime.json", "tests/regression/complete-e2e-prove-receipt.test.sh", "tests/regression/complete-e2e-list-surfaces-no-attest.test.sh", "tests/regression/complete-e2e-execute-receipt.test.sh", "scripts/complete-e2e/clean-room-replay.py", "scripts/complete-e2e/clean-room-replay.sh", "tests/regression/complete-e2e-clean-room-replay.test.sh", "scripts/complete-e2e/check-adapter-paths.py", "scripts/complete-e2e/check-adapter-paths.sh", "tests/regression/complete-e2e-adapter-paths.test.sh", "tests/regression/enforce-runs-fail-closed-regressions.test.sh", "tests/regression/complete-e2e-universal-fault-provers.test.sh", "scripts/complete-e2e/prove/invalid-config.sh", "scripts/complete-e2e/prove/missing-env.sh", "scripts/complete-e2e/prove/build.sh", "scripts/complete-e2e/prove/startup.sh", "scripts/complete-e2e/prove/cleanup.sh", "tests/regression/complete-e2e-universal-lifecycle-provers.test.sh", "scripts/tidy/run.sh", "scripts/tidy/run.py", "scripts/enforce/run.sh", "scripts/enforce/run.py", "scripts/release-ready/run.sh", "scripts/release-ready/run.py", "devtools/enforce/run.sh", "tests/regression/devtools-enforce-not-occupancy-stub.test.sh", "tests/regression/complete-e2e-consumer-refuse-skip-npm.test.sh", "tests/regression/complete-e2e-policy-scan-covers-typescript.test.sh", "tests/regression/complete-e2e-policy-scan-covers-devtools.test.sh", "tests/regression/complete-e2e-policy-scan-covers-configs-json.test.sh", "tests/regression/complete-e2e-layer1-covers-devtools-shell.test.sh", "tests/regression/complete-e2e-policy-scan-covers-media.test.sh", "tests/regression/complete-e2e-policy-scan-covers-svg.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-object-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-numeric-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-minified-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-shell-eq-true-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-shell-certified-eq-spaced-1.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-numeric-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-minified-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-minified-numeric-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-docs.test.sh"]
+    required = ["scripts/verify/run.sh", "scripts/verify/run.py", "scripts/complete-e2e/consumer.py", "scripts/complete-e2e/consumer.sh", "scripts/complete-e2e/check_readme_media.py", "scripts/complete-e2e/run.py", "scripts/complete-e2e/run.sh", "scripts/complete-e2e/prove.py", "scripts/complete-e2e/prove.sh", "scripts/complete-e2e/list-surfaces.py", "scripts/complete-e2e/execute-consumer.py", "scripts/complete-e2e/execute-consumer.sh", "configs/complete-e2e/runtime.json", "tests/regression/complete-e2e-prove-receipt.test.sh", "tests/regression/complete-e2e-list-surfaces-no-attest.test.sh", "tests/regression/complete-e2e-execute-receipt.test.sh", "scripts/complete-e2e/clean-room-replay.py", "scripts/complete-e2e/clean-room-replay.sh", "tests/regression/complete-e2e-clean-room-replay.test.sh", "scripts/complete-e2e/check-adapter-paths.py", "scripts/complete-e2e/check-adapter-paths.sh", "tests/regression/complete-e2e-adapter-paths.test.sh", "tests/regression/enforce-runs-fail-closed-regressions.test.sh", "tests/regression/complete-e2e-universal-fault-provers.test.sh", "scripts/complete-e2e/prove/invalid-config.sh", "scripts/complete-e2e/prove/missing-env.sh", "scripts/complete-e2e/prove/build.sh", "scripts/complete-e2e/prove/startup.sh", "scripts/complete-e2e/prove/cleanup.sh", "tests/regression/complete-e2e-universal-lifecycle-provers.test.sh", "scripts/tidy/run.sh", "scripts/tidy/run.py", "scripts/enforce/run.sh", "scripts/enforce/run.py", "scripts/release-ready/run.sh", "scripts/release-ready/run.py", "devtools/enforce/run.sh", "tests/regression/devtools-enforce-not-occupancy-stub.test.sh", "tests/regression/complete-e2e-consumer-refuse-skip-npm.test.sh", "tests/regression/complete-e2e-policy-scan-covers-typescript.test.sh", "tests/regression/complete-e2e-policy-scan-covers-devtools.test.sh", "tests/regression/complete-e2e-policy-scan-covers-configs-json.test.sh", "tests/regression/complete-e2e-layer1-covers-devtools-shell.test.sh", "tests/regression/complete-e2e-policy-scan-covers-media.test.sh", "tests/regression/complete-e2e-policy-scan-covers-svg.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-object-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-numeric-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-json-minified-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-shell-eq-true-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-shell-certified-eq-spaced-1.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-numeric-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-minified-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-yaml-minified-numeric-enables.test.sh", "tests/regression/complete-e2e-policy-scan-covers-docs.test.sh", "tests/regression/complete-e2e-policy-scan-covers-root-md.test.sh"]
     for rel in required:
         if (ROOT / rel).is_file(): pass_("present " + rel)
         else: fail_("missing " + rel); rc = 1
@@ -86,6 +86,7 @@ def main():
         "tests/regression/complete-e2e-policy-scan-covers-yaml-minified-enables.test.sh",
         "tests/regression/complete-e2e-policy-scan-covers-yaml-minified-numeric-enables.test.sh",
         "tests/regression/complete-e2e-policy-scan-covers-docs.test.sh",
+        "tests/regression/complete-e2e-policy-scan-covers-root-md.test.sh",
     ]
     for rel in live_regressions:
         script = ROOT / rel
@@ -137,7 +138,8 @@ def main():
         fail_("missing check-adapter-paths.py"); rc = 1
     print("Layer 6 -- policy scan (no ALLOW_UNPROVEN / fake CERTIFIED)")
     banned = []
-    # Scan scripts/, devtools/, configs/, media/, and docs/: verify requires media/;
+    # Scan scripts/, devtools/, configs/, media/, docs/, and root-level files:
+    # verify requires media/ and Layer-1 root surfaces README.md/LICENSE/CHANGELOG.md;
     # shipping loaders live under media/loaders/*.js|*.html and consumer requires
     # media/icon.svg — scripts+devtools+configs-only previously greenwashed PASS
     # while a fake CERTIFIED enable in that required product surface stayed
@@ -145,7 +147,12 @@ def main():
     # a blind spot. docs/complete-e2e operator notes are .md (already in suffix
     # set) but docs/ was omitted from roots — a fake CERTIFIED enable under docs/ greenwashed
     # Layer 6 PASS while scripts+devtools+configs+media stayed "clean".
+    # Root README.md/CHANGELOG.md are .md (already in suffix set) but dir-only
+    # policy_roots omitted the repo root — a fake CERTIFIED enable in README.md
+    # greenwashed policy PASS while scripts+devtools+configs+media+docs stayed "clean".
+    # Scan ROOT.iterdir() files only (not rglob) so tests/ plant needles stay out of scope.
     policy_roots = [scripts_root, ROOT / "devtools", ROOT / "configs", ROOT / "media", ROOT / "docs"]
+    policy_paths = []
     for policy_root in policy_roots:
         if not policy_root.is_dir():
             continue
@@ -154,114 +161,122 @@ def main():
                 continue
             if path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts", ".json", ".js", ".html", ".svg"}:
                 continue
-            text = path.read_text(encoding="utf-8", errors="replace")
-            rel = str(path.relative_to(ROOT))
-            allow_a = "ALLOW_UNPROVEN" + "=1"
-            allow_b = "ALLOW_UNPROVEN" + " = 1"
-            # Shell =true enables (scripts/*.sh): =1 / " = 1" needles previously
-            # greenwashed PASS while env =true forms stayed invisible.
-            allow_t = "ALLOW_UNPROVEN" + "=true"
-            allow_ts = "ALLOW_UNPROVEN" + " = true"
-            # JSON object enables (configs/*.json): shell-style env needles
-            # previously greenwashed PASS while JSON boolean CERTIFIED stayed invisible.
-            allow_j = '"ALLOW_UNPROVEN"' + ": true"
-            # JSON numeric enables (configs/*.json): boolean ": true" needles
-            # previously greenwashed PASS while JSON numeric CERTIFIED stayed invisible.
-            allow_jn = '"ALLOW_UNPROVEN"' + ": 1"
-            # JSON minified enables (configs/*.json): spaced ": true"/": 1" needles
-            # previously greenwashed PASS while JSON.stringify-style minified
-            # colon-true / colon-1 (no space after colon) stayed invisible.
-            allow_jm = '"ALLOW_UNPROVEN"' + ":true"
-            allow_jnm = '"ALLOW_UNPROVEN"' + ":1"
-            # YAML unquoted-key enables (configs/*.yml|*.yaml): JSON-quoted
-            # key needles previously greenwashed PASS while YAML unquoted-key
-            # boolean ": true" forms stayed invisible even though .yml/.yaml
-            # are already in the suffix set.
-            allow_y = "ALLOW_UNPROVEN" + ": true"
-            # YAML unquoted-key numeric: boolean ": true" needles previously
-            # greenwashed PASS while unquoted-key numeric ": 1" forms stayed
-            # invisible under .yml/.yaml already in the suffix set.
-            allow_yn = "ALLOW_UNPROVEN" + ": 1"
-            # YAML unquoted-key minified boolean: spaced ": true" needles previously
-            # greenwashed PASS while flow-style unquoted-key minified colon-true
-            # (no space after colon) stayed invisible under .yml/.yaml already in the
-            # suffix set (JSON minified needles require quoted keys).
-            allow_ym = "ALLOW_UNPROVEN" + ":true"
-            # YAML unquoted-key minified numeric: spaced ": 1" and minified ":true"
-            # needles previously greenwashed PASS while flow-style unquoted-key
-            # minified colon-1 (no space after colon) stayed invisible under
-            # .yml/.yaml already in the suffix set (JSON minified ":1" needles
-            # require quoted keys).
-            allow_ynm = "ALLOW_UNPROVEN" + ":1"
-            if (
-                allow_a in text
-                or allow_b in text
-                or allow_t in text
-                or allow_ts in text
-                or allow_j in text
-                or allow_jn in text
-                or allow_jm in text
-                or allow_jnm in text
-                or allow_y in text
-                or allow_yn in text
-                or allow_ym in text
-                or allow_ynm in text
-            ):
-                banned.append(rel + ": " + allow_a)
-            cert_a = "CERTIFIED" + "=1"
-            # Shell spaced numeric enable: ALLOW_UNPROVEN already has allow_b
-            # (" = 1"); CERTIFIED + "=1"-only previously greenwashed PASS while the
-            # spaced numeric form stayed invisible in scripts/*.sh.
-            cert_as = "certified" + " = 1"
-            cert_b = "certified" + " = true"
-            # Shell env =true (no spaces): spaced certified + " = true" previously
-            # greenwashed PASS while no-space =true stayed invisible in scripts/*.sh.
-            cert_t = "certified" + "=true"
-            cert_j = '"CERTIFIED"' + ": true"
-            cert_jl = '"certified"' + ": true"
-            cert_jn = '"CERTIFIED"' + ": 1"
-            cert_jnl = '"certified"' + ": 1"
-            cert_jm = '"CERTIFIED"' + ":true"
-            cert_jml = '"certified"' + ":true"
-            cert_jnm = '"CERTIFIED"' + ":1"
-            cert_jnml = '"certified"' + ":1"
-            # YAML unquoted-key boolean: JSON quoted-key needles previously
-            # greenwashed PASS while unquoted-key ": true" stayed invisible
-            # under .yml/.yaml already listed in the suffix set.
-            cert_y = "certified" + ": true"
-            # YAML unquoted-key numeric: cert_y ": true" previously greenwashed
-            # PASS while unquoted-key numeric ": 1" stayed invisible under .yml/.yaml.
-            cert_yn = "certified" + ": 1"
-            # YAML unquoted-key minified boolean: cert_y ": true" previously
-            # greenwashed PASS while unquoted-key minified colon-true stayed invisible
-            # under .yml/.yaml (JSON cert_jml requires quoted-key minified form).
-            cert_ym = "certified" + ":true"
-            # YAML unquoted-key minified numeric: cert_yn ": 1" / cert_ym ":true"
-            # previously greenwashed PASS while unquoted-key minified colon-1
-            # stayed invisible under .yml/.yaml (JSON cert_jnml requires
-            # quoted-key minified form).
-            cert_ynm = "certified" + ":1"
-            if (
-                cert_a in text
-                or cert_as in text.lower()
-                or cert_b in text.lower()
-                or cert_t in text.lower()
-                or cert_j in text
-                or cert_jl in text.lower()
-                or cert_jn in text
-                or cert_jnl in text.lower()
-                or cert_jm in text
-                or cert_jml in text.lower()
-                or cert_jnm in text
-                or cert_jnml in text.lower()
-                or cert_y in text.lower()
-                or cert_yn in text.lower()
-                or cert_ym in text.lower()
-                or cert_ynm in text.lower()
-            ):
-                banned.append(rel + ": fake CERTIFIED enable")
+            policy_paths.append(path)
+    for path in sorted(ROOT.iterdir()):
+        if not path.is_file():
+            continue
+        if path.suffix not in {".py", ".sh", ".md", ".yml", ".yaml", ".ts", ".json", ".js", ".html", ".svg"}:
+            continue
+        policy_paths.append(path)
+    for path in policy_paths:
+        text = path.read_text(encoding="utf-8", errors="replace")
+        rel = str(path.relative_to(ROOT))
+        allow_a = "ALLOW_UNPROVEN" + "=1"
+        allow_b = "ALLOW_UNPROVEN" + " = 1"
+        # Shell =true enables (scripts/*.sh): =1 / " = 1" needles previously
+        # greenwashed PASS while env =true forms stayed invisible.
+        allow_t = "ALLOW_UNPROVEN" + "=true"
+        allow_ts = "ALLOW_UNPROVEN" + " = true"
+        # JSON object enables (configs/*.json): shell-style env needles
+        # previously greenwashed PASS while JSON boolean CERTIFIED stayed invisible.
+        allow_j = '"ALLOW_UNPROVEN"' + ": true"
+        # JSON numeric enables (configs/*.json): boolean ": true" needles
+        # previously greenwashed PASS while JSON numeric CERTIFIED stayed invisible.
+        allow_jn = '"ALLOW_UNPROVEN"' + ": 1"
+        # JSON minified enables (configs/*.json): spaced ": true"/": 1" needles
+        # previously greenwashed PASS while JSON.stringify-style minified
+        # colon-true / colon-1 (no space after colon) stayed invisible.
+        allow_jm = '"ALLOW_UNPROVEN"' + ":true"
+        allow_jnm = '"ALLOW_UNPROVEN"' + ":1"
+        # YAML unquoted-key enables (configs/*.yml|*.yaml): JSON-quoted
+        # key needles previously greenwashed PASS while YAML unquoted-key
+        # boolean ": true" forms stayed invisible even though .yml/.yaml
+        # are already in the suffix set.
+        allow_y = "ALLOW_UNPROVEN" + ": true"
+        # YAML unquoted-key numeric: boolean ": true" needles previously
+        # greenwashed PASS while unquoted-key numeric ": 1" forms stayed
+        # invisible under .yml/.yaml already in the suffix set.
+        allow_yn = "ALLOW_UNPROVEN" + ": 1"
+        # YAML unquoted-key minified boolean: spaced ": true" needles previously
+        # greenwashed PASS while flow-style unquoted-key minified colon-true
+        # (no space after colon) stayed invisible under .yml/.yaml already in the
+        # suffix set (JSON minified needles require quoted keys).
+        allow_ym = "ALLOW_UNPROVEN" + ":true"
+        # YAML unquoted-key minified numeric: spaced ": 1" and minified ":true"
+        # needles previously greenwashed PASS while flow-style unquoted-key
+        # minified colon-1 (no space after colon) stayed invisible under
+        # .yml/.yaml already in the suffix set (JSON minified ":1" needles
+        # require quoted keys).
+        allow_ynm = "ALLOW_UNPROVEN" + ":1"
+        if (
+            allow_a in text
+            or allow_b in text
+            or allow_t in text
+            or allow_ts in text
+            or allow_j in text
+            or allow_jn in text
+            or allow_jm in text
+            or allow_jnm in text
+            or allow_y in text
+            or allow_yn in text
+            or allow_ym in text
+            or allow_ynm in text
+        ):
+            banned.append(rel + ": " + allow_a)
+        cert_a = "CERTIFIED" + "=1"
+        # Shell spaced numeric enable: ALLOW_UNPROVEN already has allow_b
+        # (" = 1"); CERTIFIED + "=1"-only previously greenwashed PASS while the
+        # spaced numeric form stayed invisible in scripts/*.sh.
+        cert_as = "certified" + " = 1"
+        cert_b = "certified" + " = true"
+        # Shell env =true (no spaces): spaced certified + " = true" previously
+        # greenwashed PASS while no-space =true stayed invisible in scripts/*.sh.
+        cert_t = "certified" + "=true"
+        cert_j = '"CERTIFIED"' + ": true"
+        cert_jl = '"certified"' + ": true"
+        cert_jn = '"CERTIFIED"' + ": 1"
+        cert_jnl = '"certified"' + ": 1"
+        cert_jm = '"CERTIFIED"' + ":true"
+        cert_jml = '"certified"' + ":true"
+        cert_jnm = '"CERTIFIED"' + ":1"
+        cert_jnml = '"certified"' + ":1"
+        # YAML unquoted-key boolean: JSON quoted-key needles previously
+        # greenwashed PASS while unquoted-key ": true" stayed invisible
+        # under .yml/.yaml already listed in the suffix set.
+        cert_y = "certified" + ": true"
+        # YAML unquoted-key numeric: cert_y ": true" previously greenwashed
+        # PASS while unquoted-key numeric ": 1" stayed invisible under .yml/.yaml.
+        cert_yn = "certified" + ": 1"
+        # YAML unquoted-key minified boolean: cert_y ": true" previously
+        # greenwashed PASS while unquoted-key minified colon-true stayed invisible
+        # under .yml/.yaml (JSON cert_jml requires quoted-key minified form).
+        cert_ym = "certified" + ":true"
+        # YAML unquoted-key minified numeric: cert_yn ": 1" / cert_ym ":true"
+        # previously greenwashed PASS while unquoted-key minified colon-1
+        # stayed invisible under .yml/.yaml (JSON cert_jnml requires
+        # quoted-key minified form).
+        cert_ynm = "certified" + ":1"
+        if (
+            cert_a in text
+            or cert_as in text.lower()
+            or cert_b in text.lower()
+            or cert_t in text.lower()
+            or cert_j in text
+            or cert_jl in text.lower()
+            or cert_jn in text
+            or cert_jnl in text.lower()
+            or cert_jm in text
+            or cert_jml in text.lower()
+            or cert_jnm in text
+            or cert_jnml in text.lower()
+            or cert_y in text.lower()
+            or cert_yn in text.lower()
+            or cert_ym in text.lower()
+            or cert_ynm in text.lower()
+        ):
+            banned.append(rel + ": fake CERTIFIED enable")
     if not banned:
-        pass_("no ALLOW_UNPROVEN/fake CERTIFIED enables in scripts+devtools+configs+media+docs")
+        pass_("no ALLOW_UNPROVEN/fake CERTIFIED enables in scripts+devtools+configs+media+docs+root")
     else:
         fail_("policy violations: " + "; ".join(banned[:5])); rc = 1
     print("Layer 7 -- tidy --full after enforce")
