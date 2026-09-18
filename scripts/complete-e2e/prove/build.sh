@@ -15,6 +15,13 @@ if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
 	exit 0
 fi
 
+# Fail-closed: unknown argv must not greenwash PASS (ignore-and-run theater).
+if [[ "$#" -gt 0 ]]; then
+	echo "usage: scripts/complete-e2e/prove/build.sh" >&2
+	echo "unrecognized arguments: $*" >&2
+	exit 2
+fi
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 cd "$ROOT" || exit 2
 fail() { echo "FAIL: $*" >&2; exit 1; }

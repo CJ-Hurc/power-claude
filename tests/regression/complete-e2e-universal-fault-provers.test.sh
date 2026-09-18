@@ -28,6 +28,11 @@ grep -q 'tidy/run.py' "$INV" || { echo "FAIL universal-fault: invalid-config.sh 
 grep -q 'enforce/run.py' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must cover enforce/run.py" >&2; exit 1; }
 grep -q 'release-ready/run.py' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must cover release-ready/run.py" >&2; exit 1; }
 grep -q 'check_readme_media.py' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must cover check_readme_media.py" >&2; exit 1; }
+grep -q 'prove/build.sh' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must cover prove/build.sh" >&2; exit 1; }
+grep -q 'prove/cleanup.sh' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must cover prove/cleanup.sh" >&2; exit 1; }
+grep -q 'prove/missing-env.sh' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must cover prove/missing-env.sh" >&2; exit 1; }
+grep -q 'prove/startup.sh' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must cover prove/startup.sh" >&2; exit 1; }
+grep -q 'prove/invalid-config.sh' "$INV" || { echo "FAIL universal-fault: invalid-config.sh must cover prove/invalid-config.sh" >&2; exit 1; }
 grep -q 'clean-room-replay.py' "$MISS" || { echo "FAIL universal-fault: missing-env.sh must invoke clean-room-replay.py" >&2; exit 1; }
 grep -q 'PC_SKIP_NPM' "$MISS" || { echo "FAIL universal-fault: missing-env.sh must force PC_SKIP_NPM=1" >&2; exit 1; }
 
