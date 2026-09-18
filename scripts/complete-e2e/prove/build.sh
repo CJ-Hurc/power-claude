@@ -3,7 +3,7 @@
 # Goal     : first-party scripts compile/parse offline without npm.
 # Purpose  : Product prover for complete-e2e universal build (artifact-or-compile).
 # Consumers: complete-e2e occupancy; exec _exec_product_universal_lifecycle; humans.
-# Inputs   : cwd = repo root. Compiles scripts/**/*.py; bash -n scripts/**/*.sh.
+# Inputs   : cwd = repo root. Compiles scripts/**/*.py; bash -n scripts+devtools/**/*.sh.
 # Outputs  : PASS/FAIL on stdout.
 # Exit codes: 0 compile ok / 1 compile failure / 2 missing prover or usage
 # Side effects: none (read-only; no npm; no PC_SKIP_NPM greenwash).
@@ -36,9 +36,11 @@ if [[ "${PC_SKIP_NPM:-}" == "1" ]]; then
 fi
 
 mapfile -t py_files < <(find "$ROOT/scripts" -type f -name '*.py' ! -path '*/__pycache__/*' | sort)
-mapfile -t sh_files < <(find "$ROOT/scripts" -type f -name '*.sh' | sort)
+# scripts/ + devtools/: required dual-origin shell must be bash -n checked
+# (scripts-only previously left devtools/enforce/run.sh unscanned).
+mapfile -t sh_files < <(find "$ROOT/scripts" "$ROOT/devtools" -type f -name '*.sh' 2>/dev/null | sort)
 [[ "${#py_files[@]}" -gt 0 ]] || fail "no scripts/**/*.py to compile"
-[[ "${#sh_files[@]}" -gt 0 ]] || fail "no scripts/**/*.sh to bash -n"
+[[ "${#sh_files[@]}" -gt 0 ]] || fail "no scripts|devtools /**/*.sh to bash -n"
 
 for py in "${py_files[@]}"; do
 	python3 -c 'import pathlib,sys; p=pathlib.Path(sys.argv[1]); compile(p.read_text(encoding="utf-8"), str(p), "exec")' "$py" \
