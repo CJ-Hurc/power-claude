@@ -2,6 +2,7 @@
 """tidy --full floor for public power-claude mirror."""
 from __future__ import annotations
 import os
+import subprocess
 import sys
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
@@ -27,7 +28,7 @@ def main():
     else:
         fail_("bytecode: " + ", ".join(str(x.relative_to(ROOT)) for x in junk[:8]))
         rc = 1
-    print("Layer 2 -- scripts compile + shebang")
+    print("Layer 2 -- scripts compile + shebang + bash -n")
     scripts_root = ROOT / "scripts"
     py_files = sorted(scripts_root.rglob("*.py")) if scripts_root.is_dir() else []
     # Include devtools/**/*.sh: required dual-origin CLI shebang must not be a
@@ -46,10 +47,27 @@ def main():
             fail_("compile " + str(py.relative_to(ROOT)) + ": " + str(e))
             rc = 1
     for sh in sh_files:
-        text = sh.read_text(encoding="utf-8", errors="replace")
-        if text.startswith("#!"): pass_("shebang " + str(sh.relative_to(ROOT)))
+        rel = str(sh.relative_to(ROOT))
+        body = sh.read_text(encoding="utf-8", errors="replace")
+        if body.startswith("#!"):
+            pass_("shebang " + rel)
         else:
-            fail_("missing shebang " + str(sh.relative_to(ROOT)))
+            fail_("missing shebang " + rel)
+            rc = 1
+        # bash -n: peer to python compile(); shebang-only previously greenwashed
+        # TIDY: PASS while syntax-broken scripts|devtools/**/*.sh stayed invisible
+        # (build prover already bash -n'd; standalone tidy --full did not).
+        r = subprocess.run(
+            ["bash", "-n", str(sh)],
+            capture_output=True,
+            text=True,
+        )
+        if r.returncode == 0:
+            pass_("bash -n " + rel)
+        else:
+            err = (r.stderr or r.stdout or "").strip().splitlines()
+            detail = err[-1] if err else "syntax error"
+            fail_("bash -n " + rel + ": " + detail)
             rc = 1
     print("Layer 3 -- gitignore covers bytecode")
     gi = (ROOT / ".gitignore").read_text(encoding="utf-8", errors="replace")
@@ -68,7 +86,7 @@ if __name__ == "__main__":
     _argv = sys.argv[1:]
     _a = set(_argv)
     if _a & {"-h", "--help"}:
-        print("usage: scripts/tidy/run.py --full\npower-claude-tidy: bytecode/compile/shebang floor — requires --full")
+        print("usage: scripts/tidy/run.py --full\npower-claude-tidy: bytecode/compile/shebang/bash -n floor — requires --full")
         raise SystemExit(0)
     if _a & {"-V", "--version"}:
         print("power-claude-tidy 1.0.0")
@@ -76,7 +94,7 @@ if __name__ == "__main__":
     # Fail-closed: advertised floor is tidy --full; bare/unknown argv must not
     # greenwash TIDY: PASS (ignore-and-run theater). Callers must pass --full.
     if _argv != ["--full"]:
-        print("usage: scripts/tidy/run.py --full\npower-claude-tidy: bytecode/compile/shebang floor — requires --full", file=sys.stderr)
+        print("usage: scripts/tidy/run.py --full\npower-claude-tidy: bytecode/compile/shebang/bash -n floor — requires --full", file=sys.stderr)
         if _argv:
             print("unrecognized arguments: " + " ".join(_argv), file=sys.stderr)
         else:
