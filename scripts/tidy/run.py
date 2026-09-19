@@ -91,10 +91,23 @@ def main():
         # Live git check-ignore: rule-text AND previously greenwashed Layer 3
         # PASS while !*.pyc (negation after *.pyc) left orphan *.pyc trackable —
         # git check-ignore would not ignore. Probe pathnames need not exist.
+        # Multi-root probes: scripts-only previously greenwashed Layer 3 PASS
+        # while !media/*.pyc / !devtools/**/*.pyc left product-tree bytecode
+        # trackable (git check-ignore would not ignore under those roots).
         probes = [
             "scripts/complete-e2e/.gitignore-floor-probe.pyc",
             "scripts/complete-e2e/.gitignore-floor-probe.pyo",
             "scripts/complete-e2e/__pycache__/.gitignore-floor-probe",
+            "devtools/.gitignore-floor-probe.pyc",
+            "devtools/.gitignore-floor-probe.pyo",
+            "configs/.gitignore-floor-probe.pyc",
+            "configs/.gitignore-floor-probe.pyo",
+            "media/.gitignore-floor-probe.pyc",
+            "media/.gitignore-floor-probe.pyo",
+            "docs/.gitignore-floor-probe.pyc",
+            "docs/.gitignore-floor-probe.pyo",
+            ".gitignore-floor-probe.pyc",
+            ".gitignore-floor-probe.pyo",
         ]
         miss = []
         for rel in probes:
