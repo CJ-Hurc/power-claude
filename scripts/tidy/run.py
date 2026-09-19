@@ -14,8 +14,8 @@ def main():
     junk = []
     for p in ROOT.rglob("*"):
         if ".git" in p.parts: continue
-        if p.name == "__pycache__" or p.suffix == ".pyc": junk.append(p)
-    if not junk: pass_("no __pycache__/.pyc")
+        if p.name == "__pycache__" or p.suffix in {".pyc", ".pyo"}: junk.append(p)
+    if not junk: pass_("no __pycache__/.pyc/.pyo")
     else:
         fail_("bytecode: " + ", ".join(str(x.relative_to(ROOT)) for x in junk[:8]))
         rc = 1
@@ -45,9 +45,12 @@ def main():
             rc = 1
     print("Layer 3 -- gitignore covers bytecode")
     gi = (ROOT / ".gitignore").read_text(encoding="utf-8", errors="replace")
-    if "__pycache__" in gi or "*.pyc" in gi: pass_(".gitignore covers bytecode")
+    # *.pyo is opt-level bytecode; *.pyc-only gitignore previously greenwashed
+    # PASS while a planted scripts/**/*.pyo stayed unignored / unscanned.
+    if ("__pycache__" in gi or "*.pyc" in gi) and "*.pyo" in gi:
+        pass_(".gitignore covers bytecode")
     else:
-        fail_(".gitignore missing __pycache__/*.pyc")
+        fail_(".gitignore missing __pycache__/*.pyc/*.pyo")
         rc = 1
     print("----------------------------------------")
     print("TIDY: PASS" if rc == 0 else "TIDY: FAIL")
