@@ -19,7 +19,7 @@ def purge_bytecode() -> None:
             continue
         if p.name == "__pycache__" and p.is_dir():
             shutil.rmtree(p, ignore_errors=True)
-        elif p.suffix == ".pyc" and p.is_file():
+        elif p.suffix in {".pyc", ".pyo"} and p.is_file():
             p.unlink(missing_ok=True)
 
 def run_gate(label: str, script: str, extra_args: list[str] | None = None) -> bool:
