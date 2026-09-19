@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """tidy --full floor for public power-claude mirror."""
 from __future__ import annotations
+import os
 import sys
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
@@ -9,6 +10,13 @@ def fail_(m): print("  FAIL  " + m, flush=True)
 def main():
     print("power-claude tidy --full")
     print("----------------------------------------")
+    # Skip-npm cannot greenwash TIDY: PASS (peer enforce/release-ready refuse;
+    # ignore-and-run under PC_SKIP_NPM=1 is floor-gate theater).
+    if os.environ.get("PC_SKIP_NPM") == "1":
+        fail_("PC_SKIP_NPM=1 refuses tidy (not a live package gate)")
+        print("----------------------------------------")
+        print("TIDY: FAIL")
+        return 1
     rc = 0
     print("Layer 1 -- no bytecode junk")
     junk = []
