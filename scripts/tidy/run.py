@@ -94,20 +94,30 @@ def main():
         # Multi-root probes: scripts-only previously greenwashed Layer 3 PASS
         # while !media/*.pyc / !devtools/**/*.pyc left product-tree bytecode
         # trackable (git check-ignore would not ignore under those roots).
+        # Also probe __pycache__/ under each product root (not scripts-only).
+        # Multi-root __pycache__ dir probes: *.pyc/*.pyo multi-root previously
+        # greenwashed Layer 3 PASS while !media/__pycache__/ left product-tree
+        # __pycache__/ dirs trackable (git check-ignore would not ignore under
+        # those roots — only scripts/complete-e2e/__pycache__/ was probed).
         probes = [
             "scripts/complete-e2e/.gitignore-floor-probe.pyc",
             "scripts/complete-e2e/.gitignore-floor-probe.pyo",
             "scripts/complete-e2e/__pycache__/.gitignore-floor-probe",
             "devtools/.gitignore-floor-probe.pyc",
             "devtools/.gitignore-floor-probe.pyo",
+            "devtools/__pycache__/.gitignore-floor-probe",
             "configs/.gitignore-floor-probe.pyc",
             "configs/.gitignore-floor-probe.pyo",
+            "configs/__pycache__/.gitignore-floor-probe",
             "media/.gitignore-floor-probe.pyc",
             "media/.gitignore-floor-probe.pyo",
+            "media/__pycache__/.gitignore-floor-probe",
             "docs/.gitignore-floor-probe.pyc",
             "docs/.gitignore-floor-probe.pyo",
+            "docs/__pycache__/.gitignore-floor-probe",
             ".gitignore-floor-probe.pyc",
             ".gitignore-floor-probe.pyo",
+            "__pycache__/.gitignore-floor-probe",
         ]
         miss = []
         for rel in probes:
