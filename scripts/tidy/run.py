@@ -88,7 +88,28 @@ def main():
     has_pyc = "*.pyc" in rules
     has_pyo = "*.pyo" in rules
     if has_pycache and has_pyc and has_pyo:
-        pass_(".gitignore covers bytecode")
+        # Live git check-ignore: rule-text AND previously greenwashed Layer 3
+        # PASS while !*.pyc (negation after *.pyc) left orphan *.pyc trackable —
+        # git check-ignore would not ignore. Probe pathnames need not exist.
+        probes = [
+            "scripts/complete-e2e/.gitignore-floor-probe.pyc",
+            "scripts/complete-e2e/.gitignore-floor-probe.pyo",
+            "scripts/complete-e2e/__pycache__/.gitignore-floor-probe",
+        ]
+        miss = []
+        for rel in probes:
+            r = subprocess.run(
+                ["git", "check-ignore", "-q", rel],
+                cwd=str(ROOT),
+                capture_output=True,
+            )
+            if r.returncode != 0:
+                miss.append(rel)
+        if not miss:
+            pass_(".gitignore covers bytecode")
+        else:
+            fail_(".gitignore check-ignore miss (negation/ineffective): " + ", ".join(miss))
+            rc = 1
     else:
         fail_(".gitignore missing active __pycache__/*.pyc/*.pyo rules")
         rc = 1
