@@ -71,12 +71,20 @@ def main():
             rc = 1
     print("Layer 3 -- gitignore covers bytecode")
     gi = (ROOT / ".gitignore").read_text(encoding="utf-8", errors="replace")
-    # *.pyo is opt-level bytecode; *.pyc-only gitignore previously greenwashed
-    # PASS while a planted scripts/**/*.pyo stayed unignored / unscanned.
-    if ("__pycache__" in gi or "*.pyc" in gi) and "*.pyo" in gi:
+    # Active (non-comment) rules only: substring `in gi` previously greenwashed
+    # PASS while __pycache__/*.pyc/*.pyo lived only inside # comments (git check-ignore
+    # would not ignore). *.pyo active rule still required (peer to junk scan).
+    rules = set()
+    for raw in gi.splitlines():
+        s = raw.strip()
+        if not s or s.startswith("#"):
+            continue
+        rules.add(s)
+    has_base = "__pycache__/" in rules or "__pycache__" in rules or "*.pyc" in rules
+    if has_base and "*.pyo" in rules:
         pass_(".gitignore covers bytecode")
     else:
-        fail_(".gitignore missing __pycache__/*.pyc/*.pyo")
+        fail_(".gitignore missing active __pycache__/*.pyc/*.pyo rules")
         rc = 1
     print("----------------------------------------")
     print("TIDY: PASS" if rc == 0 else "TIDY: FAIL")
