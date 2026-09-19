@@ -74,14 +74,20 @@ def main():
     # Active (non-comment) rules only: substring `in gi` previously greenwashed
     # PASS while __pycache__/*.pyc/*.pyo lived only inside # comments (git check-ignore
     # would not ignore). *.pyo active rule still required (peer to junk scan).
+    # Require __pycache__ AND *.pyc AND *.pyo: OR-base
+    # (`__pycache__/` OR `*.pyc`) previously greenwashed Layer 3 PASS without
+    # `*.pyc` while a planted orphan scripts/**/*.pyc stayed trackable
+    # (git check-ignore would not ignore — __pycache__/ alone covers dirs only).
     rules = set()
     for raw in gi.splitlines():
         s = raw.strip()
         if not s or s.startswith("#"):
             continue
         rules.add(s)
-    has_base = "__pycache__/" in rules or "__pycache__" in rules or "*.pyc" in rules
-    if has_base and "*.pyo" in rules:
+    has_pycache = "__pycache__/" in rules or "__pycache__" in rules
+    has_pyc = "*.pyc" in rules
+    has_pyo = "*.pyo" in rules
+    if has_pycache and has_pyc and has_pyo:
         pass_(".gitignore covers bytecode")
     else:
         fail_(".gitignore missing active __pycache__/*.pyc/*.pyo rules")
