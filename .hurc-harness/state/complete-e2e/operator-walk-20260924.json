@@ -1,0 +1,10 @@
+{
+  "schema": "hurc-complete-e2e-operator-walk/v1",
+  "walked_at": "2026-09-24T08:09:00Z",
+  "operator": "grok-complete-e2e-nightly",
+  "action": "start",
+  "active_run": false,
+  "certificate_json_present": false,
+  "engine_executed": false,
+  "note": "Repo readable. No complete-e2e state. Not CERTIFIED."
+}
