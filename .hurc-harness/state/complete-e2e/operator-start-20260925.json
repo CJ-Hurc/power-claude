@@ -1,0 +1,10 @@
+{
+  "schema": "hurc-complete-e2e-operator-start/v1",
+  "started_at": "2026-09-25T08:07:00Z",
+  "operator": "grok-complete-e2e-nightly",
+  "profile": "importing_profile",
+  "action": "start",
+  "allow_unproven": false,
+  "push": false,
+  "note": "No .hurc-harness/state/complete-e2e tree. Started operator walk via GitHub file reads. Kernel not executed on this host. CERTIFIED not claimed."
+}
