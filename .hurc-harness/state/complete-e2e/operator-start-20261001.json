@@ -1,0 +1,10 @@
+{
+  "schema": "hurc-complete-e2e-operator-start/v1",
+  "started_at": "2026-10-01T08:10:00Z",
+  "operator": "grok-complete-e2e-nightly",
+  "profile": "importing_profile",
+  "action": "start",
+  "allow_unproven": false,
+  "push": false,
+  "note": "Nightly fleet walk. GitHub file reads only. Kernel not executed on this host. CERTIFIED not claimed."
+}
