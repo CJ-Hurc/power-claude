@@ -1,0 +1,6 @@
+{
+  "schema": "hurc-complete-e2e-start/v1",
+  "date": "2026-10-23",
+  "action": "start",
+  "notes": "Nightly operator start /complete-e2e. No active run. Kernel not executed on this host. No certificate."
+}
