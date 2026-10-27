@@ -1,0 +1,13 @@
+{
+  "schema": "hurc-complete-e2e-operator-start/v1",
+  "started_at": "2026-10-27T08:13:00Z",
+  "operator": "grok-complete-e2e-nightly",
+  "profile": "importing_profile",
+  "action": "start",
+  "allow_unproven": false,
+  "push": false,
+  "active_run_json": false,
+  "certificate_json_present": false,
+  "product_read": "capabilities/complete-e2e command and catalog.json fleet excludes loaded",
+  "note": "Nightly fleet start. GitHub file writes to .hurc-harness/state only. No active-run.json, no runs/, no certificate.json. Kernel not executed on this host. CERTIFIED not claimed. No product repair."
+}
