@@ -1,0 +1,7 @@
+{
+  "schema": "hurc-complete-e2e-operator-start/v1",
+  "date": "2026-11-05",
+  "profile": "grok-importing",
+  "action": "start",
+  "notes": "Nightly fleet operator start via GitHub file write; no local engine run, no certificate produced."
+}
