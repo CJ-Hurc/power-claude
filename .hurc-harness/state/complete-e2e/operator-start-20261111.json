@@ -1,0 +1,7 @@
+{
+  "schema": "hurc-complete-e2e-operator-start/v1",
+  "date": "2026-11-11",
+  "action": "start",
+  "notes": "Nightly fleet start. No active run. Operator walk via GitHub. No ALLOW_UNPROVEN. No product repair proven.",
+  "operator": "grok-complete-e2e-nightly"
+}
