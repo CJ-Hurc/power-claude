@@ -1,0 +1,8 @@
+{
+  "schema": "hurc-complete-e2e-operator-start/v1",
+  "date": "2026-11-24",
+  "operator": "grok-profile-importing",
+  "command": "/complete-e2e",
+  "status": "WALKED",
+  "notes": "Nightly fleet operator start via connected GitHub. No active-run.json or certificate.json present. Engine not executed locally; state recorded only. No product failures proven for repair. Never HURC_COMPLETE_E2E_ALLOW_UNPROVEN."
+}
