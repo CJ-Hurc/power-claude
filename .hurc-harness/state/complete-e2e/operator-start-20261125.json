@@ -1,0 +1,6 @@
+{
+  "schema": "hurc-complete-e2e-operator-start/v1",
+  "date": "2026-11-25",
+  "action": "start",
+  "profile": "grok-importing"
+}
